@@ -41,6 +41,35 @@ USER STORIES:
 
 Stretch: I want to be able to continuously improve the platform based on user feedback, adding new features and enhancements that promote diversity and inclusion in the employment process.
 
+# PAGES
+
+- Home
+- Chats page display
+- Profile page
+- Notifications page
+- Feedback form page
+- Suggested Listings: leads to chat page
+
+## Categories
+
+- Technology page: Example - Meta
+- Finance page: Example - Goldman Sachs
+- Energy page: Example - Bloom energy
+- Educatech page: Example - CodePath
+
+**Note:** Each example loads on the Chats page.
+
+# Fixed Display
+
+- Track Applications/Candidates bar
+
+# ENDPOINTS
+
+- User Registration and Authentication
+- Candidate endpoint
+- Recruiter/Employer Endpoint
+
+
 ### WIREFRAME
 ![Capstone_Initial_layout-1](https://github.com/Henrywis/Capstone-project/assets/105118133/e870c07c-9e59-4fae-a601-1737f9eb6d65)
 ![Capstone_Initial_layout-2](https://github.com/Henrywis/Capstone-project/assets/105118133/4a0ea00c-f48c-4c94-b35b-f7014d5cbd53)
