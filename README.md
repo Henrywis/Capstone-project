@@ -40,3 +40,10 @@ USER STORIES:
 - I want to be able to provide support to users, addressing any technical issues, answering questions, and resolving disputes or complaints.
 
 Stretch: I want to be able to continuously improve the platform based on user feedback, adding new features and enhancements that promote diversity and inclusion in the employment process.
+
+### WIREFRAME
+![Capstone_Initial_layout-1](https://github.com/Henrywis/Capstone-project/assets/105118133/e870c07c-9e59-4fae-a601-1737f9eb6d65)
+![Capstone_Initial_layout-2](https://github.com/Henrywis/Capstone-project/assets/105118133/4a0ea00c-f48c-4c94-b35b-f7014d5cbd53)
+![Capstone_Initial_layout-3](https://github.com/Henrywis/Capstone-project/assets/105118133/0f071f84-70ac-4164-b61b-4771f0a8d0bc)
+
+
