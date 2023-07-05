@@ -2,9 +2,9 @@
     {
       "id": "1",
       "username": "john_doe",
-      "email": "john.doe@example.com",
+      "email": "henry.cavill@example.com",
       "password": "password123",
-      "name": "John Doe",
+      "name": "Henry Cavill",
       "bio": "Recent graduate passionate about web development.",
       "categories": ["tech", "energy"],
       "skills": ["HTML", "CSS", "JavaScript", "React"],
