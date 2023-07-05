@@ -1,0 +1,83 @@
+[
+    {
+      "id": "1",
+      "title": "Frontend Developer",
+      "content": "We are looking for a skilled frontend developer to join our team.",
+      "description": "Responsibilities include implementing user interfaces, optimizing performance, and collaborating with backend developers.",
+      "categories": ["tech"],
+      "numOfApplicants": "10",
+      "recruiters": ["jonas_cowrie"]
+    },
+    {
+      "id": "2",
+      "title": "Financial Analyst",
+      "content": "We are seeking a skilled financial analyst to provide insightful financial analysis and recommendations.",
+      "description": "Responsibilities include analyzing financial data, preparing financial reports, and supporting decision-making processes.",
+      "categories": ["finance"],
+      "numOfApplicants": "6",
+      "recruiters": ["sara_wilson"]
+    },
+    {
+      "id": "3",
+      "title": "Educational Consultant",
+      "content": "We are seeking an educational consultant to provide expert advice and support to educational institutions.",
+      "description": "Responsibilities include conducting needs assessments, developing educational strategies, and providing professional development.",
+      "categories": ["education"],
+      "numOfApplicants": "3",
+      "recruiters": ["laura_anderson"]
+    },
+    {
+      "id": "4",
+      "title": "Software & Products Engineer",
+      "content": "We are looking for a software engineer to develop and maintain high-quality software solutions to our products.",
+      "description": "Responsibilities include writing clean and efficient code, collaborating with cross-functional teams, and ensuring software quality.",
+      "categories": ["tech"],
+      "numOfApplicants": "12",
+      "recruiters": ["mike_brown"]
+    },
+    {
+      "id": "5",
+      "title": "Data Analyst",
+      "content": "Join our data analytics team and analyze complex datasets to derive valuable insights.",
+      "description": "Responsibilities include data cleaning, statistical analysis, and visualization.",
+      "categories": ["finance"],
+      "numOfApplicants": "5",
+      "recruiters": ["janet_smith"]
+    },
+    {
+      "id": "6",
+      "title": "Renewable Energy Engineer",
+      "content": "We are looking for an engineer with expertise in renewable energy systems.",
+      "description": "Responsibilities include designing and implementing renewable energy projects, conducting feasibility studies, and optimizing energy efficiency.",
+      "categories": ["energy"],
+      "numOfApplicants": "8",
+      "recruiters": ["alex_johnson"]
+    },
+    {
+      "id": "7",
+      "title": "Software Engineer",
+      "content": "We are seeking a talented software engineer to develop robust and scalable applications.",
+      "description": "Responsibilities include coding, debugging, and collaborating with cross-functional teams.",
+      "categories": ["tech"],
+      "numOfApplicants": "8",
+      "recruiters": ["john_dawson"]
+    },
+    {
+      "id": "8",
+      "title": "Environmental Engineer",
+      "content": "Join our team and contribute to sustainable energy solutions.",
+      "description": "Responsibilities include analyzing environmental impacts, designing green initiatives, and ensuring compliance with regulations.",
+      "categories": ["energy"],
+      "numOfApplicants": "3",
+      "recruiters": ["jackson_peters"]
+    },
+    {
+      "id": "9",
+      "title": "UX/UI Designer",
+      "content": "We are seeking a talented UX/UI designer to create engaging and intuitive user experiences.",
+      "description": "Responsibilities include conducting user research, designing wireframes and prototypes, and collaborating with developers.",
+      "categories": ["design", "tech"],
+      "numOfApplicants": "5",
+      "recruiters": ["laurene_kayla"]
+    }
+]

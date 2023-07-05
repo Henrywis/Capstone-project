@@ -1,0 +1,26 @@
+[
+    {
+      "id": "1",
+      "userId": "1",
+      "jobId": "4",
+      "status": "Shortlisted"
+    },
+    {
+      "id": "2",
+      "userId": "1",
+      "jobId": "8",
+      "status": "Pending"
+    },
+    {
+      "id": "3",
+      "userId": "2",
+      "jobId": "2",
+      "status": "Shortlisted"
+    },
+    {
+      "id": "4",
+      "userId": "2",
+      "jobId": "5",
+      "status": "Rejected"
+    }
+]
