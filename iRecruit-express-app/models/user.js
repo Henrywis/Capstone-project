@@ -14,5 +14,17 @@ export const User = sequelize.define('User', {
   password: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  categories: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false
+  },
+  skills: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false
   }
 });
