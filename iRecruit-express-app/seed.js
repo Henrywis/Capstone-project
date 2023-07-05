@@ -3,12 +3,14 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { User, Post } from './models/index.js';
 import { sequelize } from './database.js';
+import { Application } from './models/application.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const userData = JSON.parse(fs.readFileSync(path.resolve(__dirname, './seeders/users.json'), 'utf8'));
 const postData = JSON.parse(fs.readFileSync(path.resolve(__dirname, './seeders/posts.json'), 'utf8'));
+const applicationData = JSON.parse(fs.readFileSync(path.resolve(__dirname, './seeders/applications.json'), 'utf8'));
 
 const seedDatabase = async () => {
   try {
@@ -21,6 +23,10 @@ const seedDatabase = async () => {
 
     await Post.bulkCreate(postData);
     console.log('Post data has been seeded!');
+
+    
+    await Application.bulkCreate(applicationData);
+    console.log('Application data has been seeded!');
   } catch (error) {
     console.error('Error seeding data:', error);
   } finally {
