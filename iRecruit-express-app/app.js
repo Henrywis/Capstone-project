@@ -54,7 +54,7 @@ app.post('/posts', async (req, res) => {
 
     const postWithUser = await Post.findOne({
       where: { id: post.id },
-      include: [{ model: User, as: 'user' }]
+      include: [{ model: User, as: 'User' }]
     });
 
     res.status(201).json(postWithUser);

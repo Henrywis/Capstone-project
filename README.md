@@ -8,7 +8,6 @@ DESCRIPTION:
 
 
 
-
 USER STORIES:
 [ ]As a candidate:
 - I want to be able to create a profile on the website and indicate that I belong to an underrepresented community or identity.
