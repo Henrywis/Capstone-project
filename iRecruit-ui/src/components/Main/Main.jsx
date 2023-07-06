@@ -21,6 +21,7 @@ function Main() {
       fetchPosts();
     }, []);
   
+    //This form updater updates the input
     const handleChange = (event) => {
       setForm({
         ...form,
@@ -34,7 +35,7 @@ function Main() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
-        credentials: 'include'
+        credentials: 'include'  //to remember the user and its session state
       });
       const newPost = await response.json();
       setPosts([newPost, ...posts]);

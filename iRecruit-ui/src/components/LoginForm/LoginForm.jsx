@@ -26,7 +26,7 @@ const LoginForm = () => {
 
       if (response.ok) {
         const data = await response.json();
-        const loggedInUser = data.user;
+        const loggedInUser = data.user; //this returns a user dictionary with key called 'user', an error otherwise
 
         // Update the user context
         updateUser(loggedInUser);
@@ -69,7 +69,7 @@ const LoginForm = () => {
         </div>
         <button type="submit">Login</button>
         <p>
-          New to the app? <Link to="/signup">Sign Up</Link>
+          Don't have an account? <Link to="/signup">Sign Up</Link>
         </p>
       </form>
     </div>

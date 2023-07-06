@@ -19,7 +19,7 @@ function App() {
   });
 
   const updateUser = (newUser) => {
-    setUser(newUser)
+    setUser(newUser)                      //updates a user and its properties (like the session, etc)
   };
 
   useEffect(() => {
@@ -36,6 +36,7 @@ function App() {
         <Routes>
           <Route path="/" element={ <Main /> } />
           {/* <Route path="/" element={user ? <Main /> : <LoginForm />} /> */}
+          {/* The route commented above will use the splash page blocker */}
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
         </Routes>

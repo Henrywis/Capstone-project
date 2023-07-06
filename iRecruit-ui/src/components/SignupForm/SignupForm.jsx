@@ -8,7 +8,7 @@ const SignupForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { updateUser } = useContext(UserContext);
+  const { updateUser } = useContext(UserContext); //eliminates redundant passing of user prop into login, main, signup & anywhere theyre called
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -22,7 +22,7 @@ const SignupForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, email, password }),
-        credentials: 'include'
+        credentials: 'include'                  //remembers a user and its session
       });
 
       if (response.ok) {
@@ -87,7 +87,7 @@ const SignupForm = () => {
         </div>
         <button type="submit">Sign Up</button>
         <p>
-          Already have an account? <Link to="/login">Log In</Link>
+          Have an account? <Link to="/login">Log In</Link>
         </p>
       </form>
     </div>
