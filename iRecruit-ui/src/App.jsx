@@ -46,9 +46,9 @@ function App() {
 
   );
 
-}
+} //bc user is a state var, once set by login, the splash page blocker line becomes true and loads Main
 
-export default App;
+export default App; 
 
 
 

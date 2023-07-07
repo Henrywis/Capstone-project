@@ -4,7 +4,7 @@ import { UserContext } from "../../UserContext.js";
 import { Link } from "react-router-dom";
 
 function Main() {
-    const { user, updateUser } = useContext(UserContext);
+    const { user, updateUser } = useContext(UserContext); //global variable that sets user to new user and re-renders components 
     const [posts, setPosts] = useState([]);
     const [form, setForm] = useState({
       title: '',
