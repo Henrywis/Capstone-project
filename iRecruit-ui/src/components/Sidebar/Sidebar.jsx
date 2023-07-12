@@ -1,9 +1,9 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./Sidebar.css"
+import "./Sidebar.css";
 
 
-export default function Sidebar() {
+export default function Sidebar( {handleCategoryClick} ) {
 
     const[isOpen, setIsOpen] = useState(false);
     //To set the state of the dropdown menu to be closed by default
@@ -11,7 +11,8 @@ export default function Sidebar() {
     const handleDropDown = () =>{
         setIsOpen(!isOpen);
         //This updates the state of the dropdown when the event handledropdown is active
-    }
+    };
+    
     return (
         <div className="sidebar">
           <div className="sidebar-icons">
@@ -23,16 +24,16 @@ export default function Sidebar() {
               <div className="dropdown-menu">
                 <ul>
                   <li>
-                    <Link to="/category/tech">Tech</Link>
+                    <Link to="#" onClick={() => handleCategoryClick("tech")}>Tech</Link>
                   </li>
                   <li>
-                    <Link to="/category/finance">Finance</Link>
+                    <Link to="#" onClick={() => handleCategoryClick("finance")}>Finance</Link>
                   </li>
                   <li>
-                    <Link to="/category/research">Research</Link>
+                    <Link to="#" onClick={() => handleCategoryClick("research")}>Research</Link>
                   </li>
                   <li>
-                    <Link to="/category/design">Design</Link>
+                    <Link to="#" onClick={() => handleCategoryClick("design")}>Design</Link>
                   </li>
                 </ul>
               </div>
@@ -49,5 +50,5 @@ export default function Sidebar() {
             </Link>
           </div>
         </div>
-      );
-    }
+    );
+};

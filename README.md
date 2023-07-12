@@ -167,7 +167,7 @@ Project Week 1
 [x] Page updates on login depending on user
  
 Project Week 2
-[] User can filter opportunities based on categories
+[x] User can filter opportunities based on categories
 [] User can search for job/internship opportunities
 [] User can apply for jobs directly through the platform
 

@@ -20,10 +20,18 @@ function Main() {
     credentials: 'include'
   });
 
+  const [categoryFilter, setCategoryFilter] = useState("jobs");
+  //to set the state of the search query (with default search query as "jobs")
+
+  const [apiUrl, setApiUrl] = useState(
+    "https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=jobs"
+  );
+  //since there is no key called category in the API response and I can only manipulate the url for
+  //the desired response, a useState to update the API url is a better option
+
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(
-        "https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=jobs",
+      const response = await fetch(apiUrl,
         {
           method: "GET",
           headers: {
@@ -36,7 +44,17 @@ function Main() {
       setPosts(data.data);
     };
     fetchPosts();
-  }, []);
+  }, [apiUrl]);
+
+  const handleCategoryClick = (category) => {
+    setCategoryFilter(category);
+    setApiUrl(
+      `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=${category}`
+    );
+  };
+  //this will take care of the url update for when any category is taken as a
+  //parameter in place of "category"
+
 
   //This form updater updates the input
   const handleChange = (event) => {
@@ -71,7 +89,7 @@ function Main() {
         handleLogout={handleLogout}
       />
       <div className="content">
-        <Sidebar />
+        <Sidebar handleCategoryClick={handleCategoryClick} />
         <Routes>
           <Route
             path="/*"
@@ -82,6 +100,8 @@ function Main() {
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 setPosts={setPosts}
+                categoryFilter={categoryFilter}
+                setCategoryFilter={setCategoryFilter}
               />
             }
           />
