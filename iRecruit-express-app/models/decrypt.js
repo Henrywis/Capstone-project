@@ -3,7 +3,8 @@ import { User }from './user.js';
 
 async function migrateUsers() {
   try {
-    const users = await User.findAll(); // Retrieve all users from the database
+    const users = await User.findAll();
+    // Retrieve all users from the database
 
     for (const user of users) {
       // Hash the user's existing plain-text password
@@ -18,5 +19,5 @@ async function migrateUsers() {
     console.error('User migration failed:', error);
   }
 }
-
-migrateUsers(); // Execute the migration script
+// Execute the migration script
+migrateUsers(); 

@@ -40,7 +40,8 @@ router.post('/users', async (req, res) => {
 
 // Route for user login
 router.post('/users/login', async (req, res) => {
-  const { username, password } = req.body; //could be email, password too
+  const { username, password } = req.body;
+  //could be email, password too
 
   try {
     // we want to find the username to see if we have it in our username data

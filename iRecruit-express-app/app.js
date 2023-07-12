@@ -10,10 +10,14 @@ import SequelizeStoreInit from 'connect-session-sequelize';
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', //react app address
+  origin: 'http://localhost:5173',
+  //react app address
+
   credentials: true
 }));
-app.use(express.json()); // Middleware for parsing JSON bodies from HTTP requests
+
+// Middleware for parsing JSON bodies from HTTP requests
+app.use(express.json()); 
 app.use(morgan("dev"))
 
 const SequelizeStore = SequelizeStoreInit(session.Store);
@@ -31,7 +35,8 @@ app.use(
     cookie: {
       sameSite: false,
       secure: false,
-      expires: new Date(Date.now() + (365 * 24 * 60 * 60 * 1000)) // 1 year in milliseconds
+      expires: new Date(Date.now() + (365 * 24 * 60 * 60 * 1000))
+      // 1 year in milliseconds
     }
   })
 );

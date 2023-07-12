@@ -8,7 +8,9 @@ const SignupForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { updateUser } = useContext(UserContext); //eliminates redundant passing of user prop into login, main, signup & anywhere theyre called
+  const { updateUser } = useContext(UserContext);
+  //eliminates redundant passing of user prop into login, main, signup & anywhere theyre called
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -22,7 +24,8 @@ const SignupForm = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, email, password }),
-        credentials: 'include'                  //remembers a user and its session
+        credentials: 'include'
+        //remembers a user and its session                
       });
 
       if (response.ok) {

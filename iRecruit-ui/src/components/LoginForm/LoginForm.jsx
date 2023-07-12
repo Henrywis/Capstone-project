@@ -26,7 +26,9 @@ const LoginForm = () => {
 
       if (response.ok) {
         const data = await response.json();
-        const loggedInUser = data.user; //this returns a user dictionary with key called 'user', an error otherwise
+
+        const loggedInUser = data.user;
+        //this returns a user dictionary with key called 'user', an error otherwise
 
         // Update the user context
         updateUser(loggedInUser);

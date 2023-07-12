@@ -10,7 +10,9 @@ import Contact from "../Contact/Contact";
 import { Routes, Route } from "react-router-dom";
 
 function Main() {
-  const { user, updateUser } = useContext(UserContext); //global variable that sets user to new user and re-renders components 
+  //global variable that sets user to new user and re-renders components
+  const { user, updateUser } = useContext(UserContext); 
+
   const [posts, setPosts] = useState([]);
   const [form, setForm] = useState({
     title: '',
@@ -20,9 +22,18 @@ function Main() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch('http://localhost:3000/posts');
+      const response = await fetch(
+        "https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=jobs",
+        {
+          method: "GET",
+          headers: {
+            "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+            "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+          },
+        }
+      );
       const data = await response.json();
-      setPosts(data);
+      setPosts(data.data);
     };
     fetchPosts();
   }, []);
@@ -41,7 +52,8 @@ function Main() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
-      credentials: 'include'  //to remember the user and its session state
+      //and then include credentials to remember the user and its session state
+      credentials: 'include'  
     });
     const newPost = await response.json();
     setPosts([newPost, ...posts]);
@@ -54,39 +66,37 @@ function Main() {
 
   return (
     <div className="main">
-      <header className="header">
-        <Navbar
-          user={user}
-          handleLogout={handleLogout}
-        />
-      </header>
-        <div className="content">
-          <Routes>
-            <Route
-              path="/*"
-              element={
-                <Home
-                  form={form}
-                  posts={posts}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  setPosts={setPosts}
-                />
-              }
-            />
-            <Route
-              path="/about"
-              element={<About />}
-            />
-            <Route
-              path="/contact"
-              element={<Contact />}
-            />
-          </Routes>
-        </div>
-      
-      <Sidebar />
+      <Navbar
+        user={user}
+        handleLogout={handleLogout}
+      />
+      <div className="content">
+        <Sidebar />
+        <Routes>
+          <Route
+            path="/*"
+            element={
+              <Home
+                form={form}
+                posts={posts}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+                setPosts={setPosts}
+              />
+            }
+          />
+          <Route
+            path="/about"
+            element={<About />}
+          />
+          <Route
+            path="/contact"
+            element={<Contact />}
+          />
+        </Routes>
+      </div>
     </div>
   );
 }
+
 export default Main;

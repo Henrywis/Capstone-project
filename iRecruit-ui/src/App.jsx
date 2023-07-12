@@ -1,7 +1,5 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-// import reactLogo from './assets/react.svg';
-// import viteLogo from '/vite.svg';
 import Main from './components/Main/Main';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm/LoginForm';
@@ -20,7 +18,8 @@ function App() {
   });
 
   const updateUser = (newUser) => {
-    setUser(newUser)                      //updates a user and its properties (like the session, etc)
+    setUser(newUser)
+    //updates a user and its properties (like the session, etc)
   };
 
   useEffect(() => {
