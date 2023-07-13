@@ -7,7 +7,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import Home from "../Home/Home";
 import About from "../About/About";
 import Contact from "../Contact/Contact";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation} from "react-router-dom";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -23,9 +23,8 @@ function Main() {
   const [categoryFilter, setCategoryFilter] = useState("jobs");
   //to set the state of the search query (with default search query as "jobs")
 
-  const [apiUrl, setApiUrl] = useState(
-    "https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=jobs"
-  );
+  const url = "https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=jobs";
+  const [apiUrl, setApiUrl] = useState(url);
   //since there is no key called category in the API response and I can only manipulate the url for
   //the desired response, a useState to update the API url is a better option
 
@@ -87,6 +86,9 @@ function Main() {
       <Navbar
         user={user}
         handleLogout={handleLogout}
+        setApiUrl={setApiUrl}
+        setCategoryFilter={setCategoryFilter}
+        url={url}
       />
       <div className="content">
         <Sidebar handleCategoryClick={handleCategoryClick} />

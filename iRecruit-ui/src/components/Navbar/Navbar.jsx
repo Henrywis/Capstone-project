@@ -6,13 +6,23 @@ import "./Navbar.css";
 
 export default function Navbar({
     user,
-    handleLogout
+    handleLogout,
+    setCategoryFilter,
+    setApiUrl,
+    url
 }) {
+
+    const handleHomeClick = () => {
+        setCategoryFilter("jobs");
+        setApiUrl(url
+        );
+      };
+
     return (
         <nav className="navbar">
             <ul className="header">
                 <li>
-                    <Link to="/">Home</Link>
+                    <Link to="/" onClick={handleHomeClick}>Home</Link>
                 </li>
                 <li>
                     <Link to="/about">About</Link>
