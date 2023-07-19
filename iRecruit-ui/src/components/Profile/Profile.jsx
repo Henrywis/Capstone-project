@@ -9,8 +9,8 @@ function Profile() {
   const [skills, setSkills] = useState("");
   const [experience, setExperience] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
-  //all of these can be updated, hence the need for state hooks
   const [profileUpdated, setProfileUpdated] = useState(false);
+  //all of these can be updated, hence the need for state hooks
 
   useEffect(() => {
     // Retrieve the profile information from localStorage when the component mounts
@@ -89,8 +89,8 @@ function Profile() {
     setTimeout(() => {
       setProfileUpdated(false);
     }, 3500);
-    console.log("Profile information saved successfully!");
-    // Display a success message to be sure it updated as needed.
+    console.info("Profile information saved successfully!");
+    // confirmation log msg for information: indicating successful save in this case
   };
 
   return (
