@@ -1,3 +1,4 @@
+import React from "react";
 import "./Main.css"
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../UserContext.js";
@@ -7,7 +8,7 @@ import Sidebar from "../Sidebar/Sidebar";
 import Home from "../Home/Home";
 import About from "../About/About";
 import Contact from "../Contact/Contact";
-import { Routes, Route, useLocation} from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation} from "react-router-dom";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -94,7 +95,7 @@ function Main() {
         <Sidebar handleCategoryClick={handleCategoryClick} />
         <Routes>
           <Route
-            path="/*"
+            exact path="/*"
             element={
               <Home
                 form={form}
@@ -122,3 +123,5 @@ function Main() {
 }
 
 export default Main;
+
+
