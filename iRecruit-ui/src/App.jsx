@@ -34,11 +34,11 @@ function App() {
     <UserContext.Provider value={{ user, updateUser }}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={ <Main /> } />
-          {/* <Route path="/" element={user ? <Main /> : <LoginForm />} /> */}
-          {/* The route commented above will use the splash page blocker */}
+          {/* <Route path="/" element={ <Main /> } /> */}
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
+          <Route path="/*" element={user ? <Main /> : <LoginForm />} />
+          {/* The route above will use the splash page blocker */}
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

@@ -1,0 +1,48 @@
+.room {
+    background-color: black;
+    color: white;
+    padding: 20px;
+  }
+  
+  .room-heading {
+    margin-top: 0;
+  }
+  
+  .room-form {
+    margin-bottom: 20px;
+  }
+  
+  .submit-button {
+    background-color: blue;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .line {
+    border-bottom: 1px solid white;
+    margin: 20px 0;
+  }
+  
+  .application-link {
+    margin-top: 20px;
+  }
+  
+  .confirmation {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease-in-out;
+  }
+  
+  .confirmation.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .confirmation p {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px;
+  }
+  

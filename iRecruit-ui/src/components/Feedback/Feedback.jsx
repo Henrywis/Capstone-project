@@ -4,8 +4,8 @@ import "./Feedback.css";
 export default function Feedback() {
   return (
     <div>
-      <h1>Feedback</h1>
-      {/* Your feedback form goes here */}
+      <h1>We want to hear from you! 😀</h1>
+        <p>feedback form goes here.</p>
     </div>
   );
 }

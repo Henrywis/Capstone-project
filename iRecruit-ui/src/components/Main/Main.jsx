@@ -1,14 +1,17 @@
 import React from "react";
-import "./Main.css"
+import "./Main.css";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../UserContext.js";
-import { Link } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import Sidebar from "../Sidebar/Sidebar";
 import Home from "../Home/Home";
 import About from "../About/About";
 import Contact from "../Contact/Contact";
-import { BrowserRouter, Routes, Route, useLocation} from "react-router-dom";
+import Profile from "../Profile/Profile";
+import Feedback from "../Feedback/Feedback";
+import Applications from "../Applications/Applications";
+import Room from "../Room/Room";
+import {  Routes, Route } from "react-router-dom";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -28,6 +31,11 @@ function Main() {
   const [apiUrl, setApiUrl] = useState(url);
   //since there is no key called category in the API response and I can only manipulate the url for
   //the desired response, a useState to update the API url is a better option
+
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [submittedApplications, setSubmittedApplications] = useState([]);
+  //changes the state of the Applications component based on submitted applns
+
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -51,10 +59,15 @@ function Main() {
     setApiUrl(
       `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=${category}`
     );
-  };
-  //this will take care of the url update for when any category is taken as a
-  //parameter in place of "category"
+    //this will take care of the url update for when any category is taken as a
+    //parameter in place of "category"
 
+    fetch(`http://localhost:3000/seed?category=${category}`, {
+      method: "POST",
+    });
+    // Make a request to the backend API to trigger seeding with the selected category
+
+  };
 
   //This form updater updates the input
   const handleChange = (event) => {
@@ -62,6 +75,13 @@ function Main() {
       ...form,
       [event.target.name]: event.target.value,
     });
+  };
+
+  const handleApplicationSubmit = (application) => {
+    setSubmittedApplications((prevApplications) => [
+      ...prevApplications,
+      application,
+    ]);
   };
 
   const handleSubmit = async (event) => {
@@ -95,7 +115,7 @@ function Main() {
         <Sidebar handleCategoryClick={handleCategoryClick} />
         <Routes>
           <Route
-            exact path="/*"
+            path="/*"
             element={
               <Home
                 form={form}
@@ -105,6 +125,11 @@ function Main() {
                 setPosts={setPosts}
                 categoryFilter={categoryFilter}
                 setCategoryFilter={setCategoryFilter}
+                selectedPostId={selectedPostId}
+                setSelectedPostId={setSelectedPostId}
+                submittedApplications={submittedApplications}
+                setSubmittedApplications={setSubmittedApplications}
+                handleApplicationSubmit={handleApplicationSubmit}
               />
             }
           />
@@ -116,6 +141,9 @@ function Main() {
             path="/contact"
             element={<Contact />}
           />
+          <Route path="/feedback" element={<Feedback />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/applications" element={<Applications id={selectedPostId} posts={submittedApplications} />} />
         </Routes>
       </div>
     </div>

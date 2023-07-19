@@ -26,5 +26,13 @@ export const User = sequelize.define('User', {
   skills: {
     type: DataTypes.ARRAY(DataTypes.STRING),
     allowNull: false
+  },
+  education: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  experience: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
 });

@@ -13,10 +13,31 @@
   }
   
   .header li {
+    position: relative;
     margin-right: 10px;
     display: inline;
     list-style-type: none;
   }
+
+  .tooltip {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .header li:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
+  
   
   .header a {
     text-decoration: none;
@@ -41,9 +62,9 @@
   
   .user-info button {
     padding: 5px 10px;
-    background-color: #ff5722;
+    background-color: lightblue;
     border: none;
-    color: blue;
+    color: black;
     cursor: pointer;
     text-decoration: underline;
     margin-right: 10px;

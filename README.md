@@ -168,16 +168,17 @@ Project Week 1
  
 Project Week 2
 [x] User can filter opportunities based on categories
-[] User can search for job/internship opportunities
-[] User can apply for jobs directly through the platform
+[x] User can search for job/internship opportunities
+[x] User can apply for jobs directly through the platform
 
 Project 3
 [] User can get job ranking and suggestion based on category clicks
-[] Fancy dropdown for categories (consider icons too)
-[] User can see their profile
+[x] dropdown for categories (consider icons too)
+[x] UI for either dropdown/categories/recommendation/profile - Implemented Carousel
+[x] User can see & edit their profile
 
 Project Week 4
-[] User can see their profile (cont.)
+[x] User can see & edit their profile (cont.)
 [] User can see potential applicants checking out the same job opening
 
 Project Week 5
