@@ -13,6 +13,7 @@ export default function Applications({ posts }) {
             {posts.map((application) => (
               <li key={application.id} className="application-card">
                 <h3>{application.title}</h3>
+                <h2>status: Submitted & Pending...</h2>
               </li>
             ))}
           </ul>

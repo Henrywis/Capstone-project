@@ -43,6 +43,7 @@ function Profile() {
     }
   };
 
+  //note: will have to reduce code redundancy here.
   const handleBioChange = (event) => {
     setBio(event.target.value);
   };
