@@ -45,7 +45,13 @@ function App() {
   </div>
 
   );
-  /* I am a new comment */
+  /*
+
+
+  I am a new comment
+
+
+  */
 } //bc user is a state var, once set by login, the splash page blocker line becomes true and loads Main
 
 export default App;
