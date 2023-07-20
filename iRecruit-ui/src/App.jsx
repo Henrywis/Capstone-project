@@ -34,11 +34,11 @@ function App() {
     <UserContext.Provider value={{ user, updateUser }}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={ <Main /> } />
-          {/* <Route path="/" element={user ? <Main /> : <LoginForm />} /> */}
-          {/* The route commented above will use the splash page blocker */}
+          {/* <Route path="/" element={ <Main /> } /> */}
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
+          <Route path="/*" element={user ? <Main /> : <LoginForm />} />
+          {/* The route above will use the splash page blocker */}
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
@@ -48,4 +48,4 @@ function App() {
 
 } //bc user is a state var, once set by login, the splash page blocker line becomes true and loads Main
 
-export default App; 
+export default App;

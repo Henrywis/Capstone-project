@@ -6,24 +6,20 @@ export const Post = sequelize.define('Post', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  content: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
-  categories: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: false
-  },
-  numOfApplicants: {
+  url: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  recruiters: {
-    type: DataTypes.ARRAY(DataTypes.STRING),
+  company: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  postDate : {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  slug: {
+    type: DataTypes.STRING,
     allowNull: false
   }
 });

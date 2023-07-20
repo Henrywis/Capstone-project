@@ -1,3 +1,4 @@
+
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -211,4 +212,3 @@ sequelize.sync({ alter: true })
   .catch(error => {
     console.error('Unable to connect to the database:', error);
   });
-

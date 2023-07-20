@@ -8,7 +8,7 @@ DESCRIPTION:
 
 
 
-Meta University Eng Project Plan Template     
+Meta University Eng Project Plan Template     
 
 [iRECRUIT]
 Intern: [Henry Alumona]
@@ -55,8 +55,8 @@ Screen Archetypes:
 √
 Navigation:
 
-- Login/Registration Screen: Allows users to log in or register for  a new account.
-- Home/Dashboard Screen/Feed Screen: Displays  a feed of internship/job opportunities based on the user’s categories of interest.
+- Login/Registration Screen: Allows users to log in or register for  a new account.
+- Home/Dashboard Screen/Feed Screen: Displays  a feed of internship/job opportunities based on the user’s categories of interest.
 - Applications List/Rooms Screen: Shows a list of all the applications the user has submitted.
 - Current Application Screen: Provides information about a specific application (including its status - Shortlisted, Rejected, Pending)
 - Notifications Screen: Notifies the user about new internship listings or recruiter interest
@@ -116,19 +116,19 @@ Retrieves the user’s notifications
 Technical Challenges
 //For your project, you should demonstrate that you can apply what you’ve learned so far and expand on that knowledge to write code and implement features that go beyond the scope of the projects you worked on during CodePath.
 
-//Based on the general idea and direction of your project requirements, your intern manager will create at least two (2) Technical Challenges for you. This section is all about explaining what they are and how you’re planning to tackle them - you’ll work together with your manager to fill it out. 
+//Based on the general idea and direction of your project requirements, your intern manager will create at least two (2) Technical Challenges for you. This section is all about explaining what they are and how you’re planning to tackle them - you’ll work together with your manager to fill it out. 
 
 Technical Challenge #1 
 RECOMMENDATION ENGINE
 For this project, I will be developing a recommendation engine that suggests internship/job opportunities based on the user's previous interactions, using weighting factors like category clicks, time spent and what user searches in the following order:
-1. DATA GATHERING/COLLECTION:-  I will track the user interactions (category clicks, time spent on each listing and search queries by the user)
+1. DATA GATHERING/COLLECTION:-  I will track the user interactions (category clicks, time spent on each listing and search queries by the user)
 - I will store this interaction data and the user profiles, jobs/internships in my postgreSQL database
 
 
 2. DATA PROCESSING:- I will convert the data (categorical data such as category clicks) into numerical data to be stored in my database, suitable for analysis.
 
 3. DEFINE SIMILARITY MATRIX
-I will be using the Cosine Similarity metric to measure the similarity between a user and the job/internship listing 
+I will be using the Cosine Similarity metric to measure the similarity between a user and the job/internship listing 
 For this, I will be having a user-item matrix to have vector representations of listing against user and the attributes of each user-listing matrix are number of interactions.
 
 4. RECOMMENDATION GENERATION
@@ -138,9 +138,9 @@ Recommend listings with the higher similarity with the user’s interactions bas
 
 Technical Challenge #2
 
-SCALABILITY : 
+SCALABILITY : 
  Ensuring the system can handle a growing number of users, applications and listings without performance degradation through CACHING
-Caching involves storing frequently accessed data in a cache, which is a fast-access, temporary storage system 
+Caching involves storing frequently accessed data in a cache, which is a fast-access, temporary storage system 
 
 HOW?
 1. I will Identify Frequently Accessed Data
@@ -168,16 +168,17 @@ Project Week 1
  
 Project Week 2
 [x] User can filter opportunities based on categories
-[] User can search for job/internship opportunities
-[] User can apply for jobs directly through the platform
+[x] User can search for job/internship opportunities
+[x] User can apply for jobs directly through the platform
 
 Project 3
 [] User can get job ranking and suggestion based on category clicks
-[] Fancy dropdown for categories (consider icons too)
-[] User can see their profile
+[x] dropdown for categories (consider icons too)
+[x] UI for either dropdown/categories/recommendation/profile - Implemented Carousel
+[x] User can see & edit their profile
 
 Project Week 4
-[] User can see their profile (cont.)
+[x] User can see & edit their profile (cont.)
 [] User can see potential applicants checking out the same job opening
 
 Project Week 5
@@ -209,7 +210,7 @@ Project Week 7
 - Energy page: Example - Bloom energy
 - Educatech page: Example - CodePath
 
-**Note:** Each example loads on the Chats page.
+*Note:* Each example loads on the Chats page.
 
 # Fixed Display
 
@@ -226,5 +227,3 @@ Project Week 7
 ![Capstone_Initial_layout-1](https://github.com/Henrywis/Capstone-project/assets/105118133/e870c07c-9e59-4fae-a601-1737f9eb6d65)
 ![Capstone_Initial_layout-2](https://github.com/Henrywis/Capstone-project/assets/105118133/4a0ea00c-f48c-4c94-b35b-f7014d5cbd53)
 ![Capstone_Initial_layout-3](https://github.com/Henrywis/Capstone-project/assets/105118133/0f071f84-70ac-4164-b61b-4771f0a8d0bc)
-
-
