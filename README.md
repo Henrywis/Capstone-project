@@ -179,15 +179,15 @@ Project 3
 
 Project Week 4
 [x] User can see & edit their profile (cont.)
-[] User can see potential applicants checking out the same job opening
+[] User can get job ranking and suggestion based on category clicks
 
 Project Week 5
 [] User can hover over a listing to see more information
 [] Loading State
-[] User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected. (Optional)
+[] Implement caching
 
 Project Week 6
-[] User can get notifications on listings or recruiter interest
+[] Implement caching
 [] User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected. (Optional)
 [] Start fixing bugs
 
