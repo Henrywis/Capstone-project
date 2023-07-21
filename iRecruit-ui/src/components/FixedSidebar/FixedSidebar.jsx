@@ -1,33 +1,3 @@
-// import React from "react";
-// import "./FixedSidebar.css";
-
-// const FixedSidebar = () => {
-//   return (
-//     <div className="fixed-sidebar">
-//       <div className="sidebar-container">
-//         <div className="sidebar-box">
-//           <div className="box-title">
-//             <h2>Application status</h2>
-//           </div>
-//           <div className="sidebar-box1">
-//             {/* content */}
-//           </div>
-//         </div>
-//         <div className="sidebar-box">
-//           <div className="box-title">
-//             <h2>Recommendations</h2>
-//           </div>
-//           <div className="sidebar-box2">
-//             {/* content */}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default FixedSidebar;
-
 
 import React from "react";
 import "./FixedSidebar.css";
