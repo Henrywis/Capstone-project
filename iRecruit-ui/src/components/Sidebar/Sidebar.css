@@ -1,6 +1,6 @@
 .sidebar {
   width: 80px;
-  background-color: black;
+  background-color:  black;
   padding: 10px;
   position: fixed;
   left: 0;
@@ -40,9 +40,6 @@
   color: #ff5722;
 }
 
-/* .sidebar-icon {
-  position: relative;
-} */
 
 .tooltip {
   position: absolute;
@@ -51,6 +48,7 @@
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.8);
   color: #fff;
+  font-size: 20px;
   padding: 5px 10px;
   border-radius: 5px;
   opacity: 0;

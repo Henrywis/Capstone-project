@@ -1,8 +1,9 @@
+
 .carousel-container {
   position: relative;
-  height: 70px; 
+  height: 60px; 
   overflow: hidden;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   background-color: lightblue;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   padding: 20px;
