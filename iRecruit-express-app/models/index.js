@@ -7,4 +7,4 @@ Post.belongsTo(User, { as: 'user', foreignKey: 'userId' });
 Application.belongsTo(User, { as: 'user', foreignKey: 'userId' });
 Application.belongsTo(Post, { as: 'post', foreignKey: 'jobId' });
 
-export { User, Post, Application };
+export { User, Post, Application }; 

@@ -179,15 +179,15 @@ Project 3
 
 Project Week 4
 [x] User can see & edit their profile (cont.)
-[] User can see potential applicants checking out the same job opening
+[] User can get job ranking and suggestion based on category clicks
 
 Project Week 5
 [] User can hover over a listing to see more information
 [] Loading State
-[] User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected. (Optional)
+[] Implement caching
 
 Project Week 6
-[] User can get notifications on listings or recruiter interest
+[] Implement caching
 [] User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected. (Optional)
 [] Start fixing bugs
 
@@ -222,6 +222,13 @@ Project Week 7
 - Candidate endpoint
 - Recruiter/Employer Endpoint
 
+
+# CURRENT MODIFICATIONS
+- Applications + Status bar
+<img width="1723" alt="image" src="https://github.com/Henrywis/Capstone-project/assets/105118133/0e991fef-9feb-4ee1-af91-39107b980b27">
+
+- Profile page
+<img width="1723" alt="image" src="https://github.com/Henrywis/Capstone-project/assets/105118133/8901cb9e-26a0-4307-a6f8-025af067e3cf">
 
 ### WIREFRAME
 ![Capstone_Initial_layout-1](https://github.com/Henrywis/Capstone-project/assets/105118133/e870c07c-9e59-4fae-a601-1737f9eb6d65)

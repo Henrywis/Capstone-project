@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Sidebar.css";
-// import { FaUserCircle } from 'react-icons/fa';
+import FixedSidebar from "../FixedSidebar/FixedSidebar";
 import { BsFillGrid1X2Fill, BsFillFilePersonFill, BsChatLeftTextFill, BsBuildingFillCheck } from 'react-icons/bs';
 
 export default function Sidebar( {handleCategoryClick} ) {
@@ -63,6 +63,7 @@ export default function Sidebar( {handleCategoryClick} ) {
           <BsBuildingFillCheck />
         </Link>
       </div>
+      <FixedSidebar />
     </div>
   );
 }
