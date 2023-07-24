@@ -62,10 +62,19 @@ function Main() {
     //this will take care of the url update for when any category is taken as a
     //parameter in place of "category"
 
+    // //this saves the category click data to the local storage
+    // const event = {
+    //   category,
+    //   timestamp: new Date().toISOString(),
+    // };
+    // const existingEvents = JSON.parse(localStorage.getItem("categoryClicks")) || [];
+    // const updatedEvents = [...existingEvents, event];
+    // localStorage.setItem("categoryClicks", JSON.stringify(updatedEvents));
+
     fetch(`http://localhost:3000/seed?category=${category}`, {
       method: "POST",
     });
-    // Make a request to the backend API to trigger seeding with the selected category
+    // Makes a request to the backend API to trigger seeding with the selected category
 
   };
 
@@ -82,6 +91,9 @@ function Main() {
       ...prevApplications,
       application,
     ]);
+
+    // Store the submitted applications in local storage
+    localStorage.setItem("submittedApplications", JSON.stringify(submittedApplications));
   };
 
   const handleSubmit = async (event) => {
