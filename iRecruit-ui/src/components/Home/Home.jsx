@@ -14,8 +14,7 @@ export default function Home({
 
   const [hoveredPost, setHoveredPost] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
-
-  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [flippedPostId, setFlippedPostId] = useState(null);
 
   const carouselContent = [
     "Polish your Resumes for a better chance",
@@ -53,11 +52,13 @@ export default function Home({
   // Function to handle clicking on "Start Application" button
   const handleStartApplication = (jobId) => {
     setSelectedPostId(jobId);
+    setFlippedPostId(jobId);
   };
 
   // Function to handle clicking on "Close Application" button
   const handleCloseApplication = () => {
     setSelectedPostId(null);
+    setFlippedPostId(null);
   };
 
   return (
@@ -66,7 +67,7 @@ export default function Home({
       <div className="carousel-container">
         {carouselContent.map((content, index) => (
           <div
-            className={`carousel-item ${index === carouselIndex ? "active" : ""}`}
+            className={`carousel-item ${index === 0 ? "active" : ""}`}
             key={index}
           >
             <h2><strong>{content}</strong></h2>
@@ -89,47 +90,54 @@ export default function Home({
         ) : (
           filteredPosts.map((job) => (
             <div
-              className="post"
+              className={`post ${flippedPostId === job.slug ? "flipped" : ""}`}
               key={job.slug}
               onMouseEnter={() => setHoveredPost(job.slug)}
               onMouseLeave={() => setHoveredPost(null)}
             >
-             
-              <h2>{job.title}</h2>
-              <h3>{job.company}</h3>
-              <p>Location: {job.location}</p>
-              <p>Date Added: {job.dateAdded}</p>
+              <div className="front-content">
+                {/* particular job info*/}
+                <h2>{job.title}</h2>
+                <h3>{job.company}</h3>
+                <p>Location: {job.location}</p>
+                <p>Date Added: {job.dateAdded}</p>
 
-              {/* show job summary when hovered and "Open Summary" button is clicked */}
-              {hoveredPost === job.slug && (
-                <>
-                  <div className="open-summary" onClick={handleToggleSummary}>
-                    {showSummary ? "Close" : "Open Summary"}
-                  </div>
-                  {showSummary && (
-                    <div className="job-summary">
-                      <p>{job.summary}</p>
+                {/* shows job summary when hovered and "Open Summary" button is clicked */}
+                {hoveredPost === job.slug && (
+                  <>
+                    <div className="open-summary" onClick={handleToggleSummary}>
+                      {showSummary ? "Close" : "Open Summary"}
                     </div>
-                  )}
-                </>
-              )}
+                    {showSummary && (
+                      <div className="job-summary">
+                        <p>{job.summary}</p>
+                      </div>
+                    )}
+                  </>
+                )}
 
-              {selectedPostId === job.slug ? (
-                <>
+                {selectedPostId === job.slug ? (
                   <button onClick={handleCloseApplication}>
                     Close Application
                   </button>
+                ) : (
+                  <button onClick={() => handleStartApplication(job.slug)}>
+                    Start Application
+                  </button>
+                )}
+              </div>
+              {selectedPostId === job.slug && (
+                <div className="back-content">
                   <Room
                     jobId={selectedPostId}
                     onApplicationSubmit={handleApplicationSubmit}
                     title={job.title}
                     joburl={job.url}
                   />
-                </>
-              ) : (
-                <button onClick={() => handleStartApplication(job.slug)}>
-                  Start Application
-                </button>
+                  <button className="close-application-button" onClick={handleCloseApplication}>
+                    Close Application
+                  </button>
+                </div>
               )}
             </div>
           ))
@@ -138,4 +146,3 @@ export default function Home({
     </div>
   );
 }
-
