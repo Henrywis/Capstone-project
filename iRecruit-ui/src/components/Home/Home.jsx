@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
 import Room from "../Room/Room";
+import { TbLoaderQuarter } from "react-icons/tb";
 
 export default function Home({
   posts,
@@ -8,6 +9,7 @@ export default function Home({
   selectedPostId,
   setSelectedPostId,
   handleApplicationSubmit,
+  loading
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -23,17 +25,24 @@ export default function Home({
     "Kindly recommend this site to other potential users"
   ];
 
-  // Function to handle the search input
+  useEffect(() => {
+    filterPosts(posts, searchValue, categoryFilter);
+  }, [posts, searchValue, categoryFilter]);
+
   const handleSearch = (event) => {
     const searchInput = event.target.value;
     setSearchValue(searchInput);
   };
 
-  // Function to filter the posts based on search and category
   useEffect(() => {
-    filterPosts(posts, searchValue, categoryFilter);
-  }, [posts, searchValue, categoryFilter]);
+    const interval = setInterval(() => {
+      setCarouselIndex((prevIndex) => (prevIndex + 1) % carouselContent.length);
+    }, 7800);
 
+    return () => clearInterval(interval);
+  }, []); 
+
+  // Function to filter the posts based on search and category
   const filterPosts = (posts, searchInput) => {
     const filteredPosts = posts.filter((post) => {
       const { title } = post;
@@ -84,65 +93,77 @@ export default function Home({
         />
       </div>
 
-      <div className="posts-container">
-        {filteredPosts.length === 0 ? (
-          <p>No jobs found matching the search criteria.</p>
-        ) : (
-          filteredPosts.map((job) => (
-            <div
-              className={`post ${flippedPostId === job.slug ? "flipped" : ""}`}
-              key={job.slug}
-              onMouseEnter={() => setHoveredPost(job.slug)}
-              onMouseLeave={() => setHoveredPost(null)}
-            >
-              <div className="front-content">
-                {/* particular job info*/}
-                <h2>{job.title}</h2>
-                <h3>{job.company}</h3>
-                <p>Location: {job.location}</p>
-                <p>Date Added: {job.dateAdded}</p>
+      {loading ? (
+        <div className="loading-spinner">
+          <TbLoaderQuarter
+            className="spinner-icon"
+            size={45}
+            color="blue"
+            />
+        </div>
+      ) : (
+        <div className="posts-container">
+          {filteredPosts.length === 0 ? (
+            <p>No jobs found matching the search criteria.</p>
+          ) : (
+            filteredPosts.map((job) => (
+              <div
+                className={`post ${flippedPostId === job.slug ? "flipped" : ""}`}
+                key={job.slug}
+                onMouseEnter={() => setHoveredPost(job.slug)}
+                onMouseLeave={() => setHoveredPost(null)}
+              >
+                <div className="front-content">
+                  {/* particular job info*/}
 
-                {/* shows job summary when hovered and "Open Summary" button is clicked */}
-                {hoveredPost === job.slug && (
-                  <>
-                    <div className="open-summary" onClick={handleToggleSummary}>
-                      {showSummary ? "Close" : "Open Summary"}
-                    </div>
-                    {showSummary && (
-                      <div className="job-summary">
-                        <p>{job.summary}</p>
+                  <h2>{job.title}</h2>
+                  <h3>{job.company}</h3>
+                  <p>Location: {job.location}</p>
+                  <p>Date Added: {job.dateAdded}</p>
+
+
+                  {/* shows job summary when hovered and "Open Summary" button is clicked */}
+                  {hoveredPost === job.slug && (
+                    <>
+                      <div className="open-summary" onClick={handleToggleSummary}>
+                        {showSummary ? "Close" : "Open Summary"}
                       </div>
-                    )}
-                  </>
-                )}
+                      {showSummary && (
+                        <div className="job-summary">
+                          <p>{job.summary}</p>
+                        </div>
+                      )}
+                    </>
+                  )}
 
-                {selectedPostId === job.slug ? (
-                  <button onClick={handleCloseApplication}>
-                    Close Application
-                  </button>
-                ) : (
-                  <button onClick={() => handleStartApplication(job.slug)}>
-                    Start Application
-                  </button>
+                  {selectedPostId === job.slug ? (
+                    <button onClick={handleCloseApplication}>
+                      Close Application
+                    </button>
+                  ) : (
+                    <button onClick={() => handleStartApplication(job.slug)}>
+                      Start Application
+                    </button>
+                  )}
+                </div>
+                {selectedPostId === job.slug && (
+                  <div className="back-content">
+                    <Room
+                      jobId={selectedPostId}
+                      onApplicationSubmit={handleApplicationSubmit}
+                      title={job.title}
+                      joburl={job.url}
+                    />
+                    <button className="close-application-button" onClick={handleCloseApplication}>
+                      Close Application
+                    </button>
+                  </div>
                 )}
               </div>
-              {selectedPostId === job.slug && (
-                <div className="back-content">
-                  <Room
-                    jobId={selectedPostId}
-                    onApplicationSubmit={handleApplicationSubmit}
-                    title={job.title}
-                    joburl={job.url}
-                  />
-                  <button className="close-application-button" onClick={handleCloseApplication}>
-                    Close Application
-                  </button>
-                </div>
-              )}
-            </div>
-          ))
-        )}
-      </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }

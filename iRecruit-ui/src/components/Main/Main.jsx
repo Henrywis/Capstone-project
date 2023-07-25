@@ -29,8 +29,11 @@ function Main() {
   const [submittedApplications, setSubmittedApplications] = useState([]);
   //changes the state of the Applications component based on submitted applns
 
+  const [loading, setLoading] = useState(false);
+
   // Function to fetch additional information (location and summary) for each job
   const fetchPostsInfo = async (jobData) => {
+    setLoading(true);
     const postsWithInfo = await Promise.all(
       jobData.map(async (post) => {
         try {
@@ -58,6 +61,8 @@ function Main() {
     );
 
     setPosts(postsWithInfo);
+    //after render loading updates to false
+    setLoading(false);
   };
   //promise.all lets all promises be fulfilled before final function 
   //is run. in this case, fetching extra info with the slug url for each post.
@@ -140,6 +145,7 @@ function Main() {
                 selectedPostId={selectedPostId}
                 setSelectedPostId={setSelectedPostId}
                 handleApplicationSubmit={handleApplicationSubmit}
+                loading={loading}
               />
             }
           />

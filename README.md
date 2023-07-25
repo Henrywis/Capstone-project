@@ -174,7 +174,7 @@ Project Week 2
 Project 3
 [] User can get job ranking and suggestion based on category clicks
 [x] dropdown for categories (consider icons too)
-[x] UI for either dropdown/categories/recommendation/profile - Implemented Carousel & animation for Application page
+[x] UI for either dropdown/categories/recommendation/profile - Implemented Carousel & Application page UI
 [x] User can see & edit their profile
 
 Project Week 4
@@ -183,7 +183,7 @@ Project Week 4
 
 Project Week 5
 [x] User can hover over a listing to see more information
-[] Loading State
+[x] Loading State
 [] Implement caching
 
 Project Week 6
@@ -205,10 +205,10 @@ Project Week 7
 
 ## Categories
 
-- Technology page: Example - Meta
-- Finance page: Example - Goldman Sachs
-- Energy page: Example - Bloom energy
-- Educatech page: Example - CodePath
+- Technology page
+- Finance page
+- Research page
+- Design page
 
 *Note:* Each example loads on the Chats page.
 
@@ -229,6 +229,12 @@ Project Week 7
 
 - Profile page
 <img width="1723" alt="image" src="https://github.com/Henrywis/Capstone-project/assets/105118133/8901cb9e-26a0-4307-a6f8-025af067e3cf">
+
+- Loading State
+<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/da08a52026014e8b9cef0d7a6f9a3cc2?sid=f42d6817-bcfc-4f87-8125-82b732e3d843" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
+- Application page/Summary UI
+<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/00e6f986d0fc4fc7b829a4b8ed829616?sid=90c2ffb3-00b5-4761-a1c0-3a765a0af7a8" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
 
 ### WIREFRAME
 ![Capstone_Initial_layout-1](https://github.com/Henrywis/Capstone-project/assets/105118133/e870c07c-9e59-4fae-a601-1737f9eb6d65)
