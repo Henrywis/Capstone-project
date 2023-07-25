@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
 import Room from "../Room/Room";
-import Applications from "../Applications/Applications";
-import Profile from "../Profile/Profile";
 
 export default function Home({ 
-  posts, 
-  handleChange, 
-  handleSubmit, 
+  posts,
   categoryFilter,
   selectedPostId,
   setSelectedPostId,
-  submittedApplications,
-  setSubmittedApplications,
-  handleApplicationSubmit
+  handleApplicationSubmit,
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -45,7 +39,7 @@ export default function Home({
     return () => clearInterval(interval);
   }, []); 
 
-  const filterPosts = (posts, searchInput, category) => {
+  const filterPosts = (posts, searchInput) => {
     const filteredPosts = posts.filter((post) => {
       const { title } = post;
       const searchQuery = searchInput.toLowerCase();
@@ -93,6 +87,7 @@ export default function Home({
             <div className="post" key={job.slug}>
               <h2>{job.title}</h2>
               <h3>{job.company}</h3>
+              <p>Location: {job.location}</p>
               <p>Date Added: {job.dateAdded}</p>
               {selectedPostId === job.slug ? (
                 <>

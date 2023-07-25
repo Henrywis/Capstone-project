@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./Sidebar.css";
 import FixedSidebar from "../FixedSidebar/FixedSidebar";
@@ -13,6 +13,35 @@ export default function Sidebar( {handleCategoryClick} ) {
   const handleDropDown = () =>{
     setIsOpen(!isOpen);
     //This updates the state of the dropdown when the event handledropdown is active
+  };
+
+  //state tracking the number of clicks of each category
+  const [categoryClickCount, setCategoryClickCount] = useState({
+    tech: 0,
+    finance: 0,
+    research: 0,
+    design: 0,
+  });
+
+  // UseEffect to retrieve the category click count from localStorage on component mount
+  useEffect(() => {
+    const savedCategoryClickCount = JSON.parse(localStorage.getItem("categoryClickCount"));
+    if (savedCategoryClickCount) {
+      setCategoryClickCount(savedCategoryClickCount);
+    }
+  }, []);
+
+  // Function to update the category click count and trigger handleCategoryClick
+  const handleCategoryClickCount = (category) => {
+    setCategoryClickCount((prevClickCount) => ({
+      ...prevClickCount,
+      [category]: prevClickCount[category] + 1,
+    }));
+
+    // Store the updated category click count in localStorage
+    localStorage.setItem("categoryClickCount", JSON.stringify(categoryClickCount));
+    // Call the original handleCategoryClick function
+    handleCategoryClick(category);
   };
 
   return (
@@ -30,22 +59,22 @@ export default function Sidebar( {handleCategoryClick} ) {
           <div className="dropdown-menu">
             <ul>
               <li>
-                <Link to="#" onClick={() => handleCategoryClick("tech")}>
+                <Link to="#" onClick={() => handleCategoryClickCount("tech")}>
                   Tech
                 </Link>
               </li>
               <li>
-                <Link to="#" onClick={() => handleCategoryClick("finance")}>
+                <Link to="#" onClick={() => handleCategoryClickCount("finance")}>
                   Finance
                 </Link>
               </li>
               <li>
-                <Link to="#" onClick={() => handleCategoryClick("research")}>
+                <Link to="#" onClick={() => handleCategoryClickCount("research")}>
                   Research
                 </Link>
               </li>
               <li>
-                <Link to="#" onClick={() => handleCategoryClick("design")}>
+                <Link to="#" onClick={() => handleCategoryClickCount("design")}>
                   Design
                 </Link>
               </li>

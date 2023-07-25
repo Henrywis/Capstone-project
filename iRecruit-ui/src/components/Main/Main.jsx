@@ -10,19 +10,12 @@ import Contact from "../Contact/Contact";
 import Profile from "../Profile/Profile";
 import Feedback from "../Feedback/Feedback";
 import Applications from "../Applications/Applications";
-import Room from "../Room/Room";
 import {  Routes, Route } from "react-router-dom";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
   const { user, updateUser } = useContext(UserContext); 
-
   const [posts, setPosts] = useState([]);
-  const [form, setForm] = useState({
-    title: '',
-    content: '',
-    credentials: 'include'
-  });
 
   const [categoryFilter, setCategoryFilter] = useState("jobs");
   //to set the state of the search query (with default search query as "jobs")
@@ -36,10 +29,46 @@ function Main() {
   const [submittedApplications, setSubmittedApplications] = useState([]);
   //changes the state of the Applications component based on submitted applns
 
+  // Function to fetch additional information (location and summary) for each job
+  const fetchPostsInfo = async (jobData) => {
+    const postsWithInfo = await Promise.all(
+      jobData.map(async (post) => {
+        try {
+          const response = await fetch(
+            `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
+            {
+              method: "GET",
+              headers: {
+                "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+                "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+              },
+            }
+          );
+          const data = await response.json();
+          return {
+            ...post,
+            location: data.location,
+            summary: data.summary,
+          };
+        } catch (error) {
+          console.error("Error fetching post data:", error);
+          return post;
+        }
+      })
+    );
 
+    setPosts(postsWithInfo);
+  };
+  //promise.all lets all promises be fulfilled before final function 
+  //is run. in this case, fetching extra info with the slug url for each post.
+
+
+  //default fetch
   useEffect(() => {
+    let pageSize = 60;
+
     const fetchPosts = async () => {
-      const response = await fetch(apiUrl,
+      const response = await fetch(`${apiUrl}&pageSize=${pageSize}`,
         {
           method: "GET",
           headers: {
@@ -49,10 +78,16 @@ function Main() {
         }
       );
       const data = await response.json();
-      setPosts(data.data);
+
+      const jobData = data.data;
+      // console.log(jobData);
+
+      fetchPostsInfo(jobData); 
+      // Fetch additional information for each job
     };
     fetchPosts();
   }, [apiUrl]);
+
 
   const handleCategoryClick = (category) => {
     setCategoryFilter(category);
@@ -65,16 +100,8 @@ function Main() {
     fetch(`http://localhost:3000/seed?category=${category}`, {
       method: "POST",
     });
-    // Make a request to the backend API to trigger seeding with the selected category
+    // Makes a request to the backend API to trigger seeding with the selected category
 
-  };
-
-  //This form updater updates the input
-  const handleChange = (event) => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
   };
 
   const handleApplicationSubmit = (application) => {
@@ -82,23 +109,13 @@ function Main() {
       ...prevApplications,
       application,
     ]);
+
+    // Store the submitted applications in local storage
+    localStorage.setItem("submittedApplications", JSON.stringify(submittedApplications));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const response = await fetch('http://localhost:3000/posts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-      //and then include credentials to remember the user and its session state
-      credentials: 'include'  
-    });
-    const newPost = await response.json();
-    setPosts([newPost, ...posts]);
-  };
   const handleLogout = () => {
-    // Perform logout logic here
-    // Example: Clear user data from localStorage, reset user state, etc.
+    //Clear user data from localStorage, reset user state
     updateUser(null);
   };
 
@@ -118,17 +135,10 @@ function Main() {
             path="/*"
             element={
               <Home
-                form={form}
                 posts={posts}
-                handleChange={handleChange}
-                handleSubmit={handleSubmit}
-                setPosts={setPosts}
                 categoryFilter={categoryFilter}
-                setCategoryFilter={setCategoryFilter}
                 selectedPostId={selectedPostId}
                 setSelectedPostId={setSelectedPostId}
-                submittedApplications={submittedApplications}
-                setSubmittedApplications={setSubmittedApplications}
                 handleApplicationSubmit={handleApplicationSubmit}
               />
             }
