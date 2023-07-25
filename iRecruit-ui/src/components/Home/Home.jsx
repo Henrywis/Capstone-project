@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
 import Room from "../Room/Room";
-import Applications from "../Applications/Applications";
-import Profile from "../Profile/Profile";
 
 export default function Home({ 
-  posts, 
-  handleChange, 
-  handleSubmit, 
+  posts,
   categoryFilter,
   selectedPostId,
   setSelectedPostId,
-  submittedApplications,
-  setSubmittedApplications,
-  handleApplicationSubmit
+  handleApplicationSubmit,
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -35,9 +29,6 @@ export default function Home({
   const handleSearch = (event) => {
     const searchInput = event.target.value;
     setSearchValue(searchInput);
-
-    // Store the search query in local storage
-    localStorage.setItem("searchQuery", searchInput);
   };
 
   useEffect(() => {
@@ -48,7 +39,7 @@ export default function Home({
     return () => clearInterval(interval);
   }, []); 
 
-  const filterPosts = (posts, searchInput, category) => {
+  const filterPosts = (posts, searchInput) => {
     const filteredPosts = posts.filter((post) => {
       const { title } = post;
       const searchQuery = searchInput.toLowerCase();
@@ -57,33 +48,6 @@ export default function Home({
 
     setFilteredPosts(filteredPosts);
   };
-
-  useEffect(() => {
-    // Function to capture the start time when the user enters a category
-    const handleCategoryEnter = () => {
-      localStorage.setItem("categoryEnterTime", Date.now());
-    };
-
-    // Function to calculate time spent in a category and store it in local storage
-    const handleCategoryLeave = () => {
-      const categoryEnterTime = localStorage.getItem("categoryEnterTime");
-      const currentTime = Date.now();
-      const timeSpentInCategory = currentTime - parseInt(categoryEnterTime, 10);
-
-      // Storing the time spent in local storage
-      localStorage.setItem("timeSpentInCategory", timeSpentInCategory);
-    };
-
-    // event listeners for category enter and leave
-    document.addEventListener("categoryEnter", handleCategoryEnter);
-    document.addEventListener("categoryLeave", handleCategoryLeave);
-
-    return () => {
-      // Then we'd remove event listeners when the component unmounts
-      document.removeEventListener("categoryEnter", handleCategoryEnter);
-      document.removeEventListener("categoryLeave", handleCategoryLeave);
-    };
-  }, []);
 
   const handleStartApplication = (jobId) => {
     setSelectedPostId(jobId);
@@ -123,6 +87,7 @@ export default function Home({
             <div className="post" key={job.slug}>
               <h2>{job.title}</h2>
               <h3>{job.company}</h3>
+              <p>Location: {job.location}</p>
               <p>Date Added: {job.dateAdded}</p>
               {selectedPostId === job.slug ? (
                 <>
