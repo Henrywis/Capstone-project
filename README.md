@@ -174,7 +174,7 @@ Project Week 2
 Project 3
 [] User can get job ranking and suggestion based on category clicks
 [x] dropdown for categories (consider icons too)
-[x] UI for either dropdown/categories/recommendation/profile - Implemented Carousel
+[x] UI for either dropdown/categories/recommendation/profile - Implemented Carousel & animation for Application page
 [x] User can see & edit their profile
 
 Project Week 4
@@ -182,7 +182,7 @@ Project Week 4
 [] User can get job ranking and suggestion based on category clicks
 
 Project Week 5
-[] User can hover over a listing to see more information
+[x] User can hover over a listing to see more information
 [] Loading State
 [] Implement caching
 
