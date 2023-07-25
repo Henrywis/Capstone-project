@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
 import Room from "../Room/Room";
+import { TbLoaderQuarter } from "react-icons/tb";
 
 export default function Home({ 
   posts,
@@ -8,6 +9,7 @@ export default function Home({
   selectedPostId,
   setSelectedPostId,
   handleApplicationSubmit,
+  loading
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -21,7 +23,6 @@ export default function Home({
     "Kindly recommend this site to other potential users"
   ];
 
-
   useEffect(() => {
     filterPosts(posts, searchValue, categoryFilter);
   }, [posts, searchValue, categoryFilter]);
@@ -34,7 +35,7 @@ export default function Home({
   useEffect(() => {
     const interval = setInterval(() => {
       setCarouselIndex((prevIndex) => (prevIndex + 1) % carouselContent.length);
-    }, 7800); // Change carousel content every 5 seconds
+    }, 7800);
 
     return () => clearInterval(interval);
   }, []); 
@@ -79,37 +80,48 @@ export default function Home({
           placeholder="Search jobs"
         />
       </div>
-      <div className="posts-container">
-        {filteredPosts.length === 0 ? (
-          <p>No jobs found matching the search criteria.</p>
-        ) : (
-          filteredPosts.map((job) => (
-            <div className="post" key={job.slug}>
-              <h2>{job.title}</h2>
-              <h3>{job.company}</h3>
-              <p>Location: {job.location}</p>
-              <p>Date Added: {job.dateAdded}</p>
-              {selectedPostId === job.slug ? (
-                <>
-                  <button onClick={handleCloseApplication}>
-                    Close Application
+
+      {loading ? (
+        <div className="loading-spinner">
+          <TbLoaderQuarter
+            className="spinner-icon"
+            size={45}
+            color="blue"
+            />
+        </div>
+      ) : (
+        <div className="posts-container">
+          {filteredPosts.length === 0 ? (
+            <p>No jobs found matching the search criteria.</p>
+          ) : (
+            filteredPosts.map((job) => (
+              <div className="post" key={job.slug}>
+                <h2>{job.title}</h2>
+                <h3>{job.company}</h3>
+                <p>Location: {job.location}</p>
+                <p>Date Added: {job.dateAdded}</p>
+                {selectedPostId === job.slug ? (
+                  <>
+                    <button onClick={handleCloseApplication}>
+                      Close Application
+                    </button>
+                    <Room
+                      jobId={selectedPostId}
+                      onApplicationSubmit={handleApplicationSubmit}
+                      title={job.title}
+                      joburl={job.url}
+                    />
+                  </>
+                ) : (
+                  <button onClick={() => handleStartApplication(job.slug)}>
+                    Start Application
                   </button>
-                  <Room
-                    jobId={selectedPostId}
-                    onApplicationSubmit={handleApplicationSubmit}
-                    title={job.title}
-                    joburl={job.url}
-                  />
-                </>
-              ) : (
-                <button onClick={() => handleStartApplication(job.slug)}>
-                  Start Application
-                </button>
-              )}
-            </div>
-          ))
-        )}
-      </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 }
