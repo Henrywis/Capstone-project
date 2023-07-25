@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Home.css";
 import Room from "../Room/Room";
 
-export default function Home({ 
+export default function Home({
   posts,
   categoryFilter,
   selectedPostId,
@@ -12,7 +12,9 @@ export default function Home({
   const [searchValue, setSearchValue] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
 
-  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [hoveredPost, setHoveredPost] = useState(null);
+  const [showSummary, setShowSummary] = useState(false);
+  const [flippedPostId, setFlippedPostId] = useState(null);
 
   const carouselContent = [
     "Polish your Resumes for a better chance",
@@ -21,23 +23,16 @@ export default function Home({
     "Kindly recommend this site to other potential users"
   ];
 
-
-  useEffect(() => {
-    filterPosts(posts, searchValue, categoryFilter);
-  }, [posts, searchValue, categoryFilter]);
-
+  // Function to handle the search input
   const handleSearch = (event) => {
     const searchInput = event.target.value;
     setSearchValue(searchInput);
   };
 
+  // Function to filter the posts based on search and category
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCarouselIndex((prevIndex) => (prevIndex + 1) % carouselContent.length);
-    }, 7800); // Change carousel content every 5 seconds
-
-    return () => clearInterval(interval);
-  }, []); 
+    filterPosts(posts, searchValue, categoryFilter);
+  }, [posts, searchValue, categoryFilter]);
 
   const filterPosts = (posts, searchInput) => {
     const filteredPosts = posts.filter((post) => {
@@ -49,21 +44,30 @@ export default function Home({
     setFilteredPosts(filteredPosts);
   };
 
-  const handleStartApplication = (jobId) => {
-    setSelectedPostId(jobId);
+  // Function to handle clicking on "Open Summary" button
+  const handleToggleSummary = () => {
+    setShowSummary((prevShowSummary) => !prevShowSummary);
   };
 
+  // Function to handle clicking on "Start Application" button
+  const handleStartApplication = (jobId) => {
+    setSelectedPostId(jobId);
+    setFlippedPostId(jobId);
+  };
+
+  // Function to handle clicking on "Close Application" button
   const handleCloseApplication = () => {
     setSelectedPostId(null);
+    setFlippedPostId(null);
   };
-  
+
   return (
     <div className="home">
 
       <div className="carousel-container">
         {carouselContent.map((content, index) => (
           <div
-            className={`carousel-item ${index === carouselIndex ? "active" : ""}`}
+            className={`carousel-item ${index === 0 ? "active" : ""}`}
             key={index}
           >
             <h2><strong>{content}</strong></h2>
@@ -79,32 +83,61 @@ export default function Home({
           placeholder="Search jobs"
         />
       </div>
+
       <div className="posts-container">
         {filteredPosts.length === 0 ? (
           <p>No jobs found matching the search criteria.</p>
         ) : (
           filteredPosts.map((job) => (
-            <div className="post" key={job.slug}>
-              <h2>{job.title}</h2>
-              <h3>{job.company}</h3>
-              <p>Location: {job.location}</p>
-              <p>Date Added: {job.dateAdded}</p>
-              {selectedPostId === job.slug ? (
-                <>
+            <div
+              className={`post ${flippedPostId === job.slug ? "flipped" : ""}`}
+              key={job.slug}
+              onMouseEnter={() => setHoveredPost(job.slug)}
+              onMouseLeave={() => setHoveredPost(null)}
+            >
+              <div className="front-content">
+                {/* particular job info*/}
+                <h2>{job.title}</h2>
+                <h3>{job.company}</h3>
+                <p>Location: {job.location}</p>
+                <p>Date Added: {job.dateAdded}</p>
+
+                {/* shows job summary when hovered and "Open Summary" button is clicked */}
+                {hoveredPost === job.slug && (
+                  <>
+                    <div className="open-summary" onClick={handleToggleSummary}>
+                      {showSummary ? "Close" : "Open Summary"}
+                    </div>
+                    {showSummary && (
+                      <div className="job-summary">
+                        <p>{job.summary}</p>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {selectedPostId === job.slug ? (
                   <button onClick={handleCloseApplication}>
                     Close Application
                   </button>
+                ) : (
+                  <button onClick={() => handleStartApplication(job.slug)}>
+                    Start Application
+                  </button>
+                )}
+              </div>
+              {selectedPostId === job.slug && (
+                <div className="back-content">
                   <Room
                     jobId={selectedPostId}
                     onApplicationSubmit={handleApplicationSubmit}
                     title={job.title}
                     joburl={job.url}
                   />
-                </>
-              ) : (
-                <button onClick={() => handleStartApplication(job.slug)}>
-                  Start Application
-                </button>
+                  <button className="close-application-button" onClick={handleCloseApplication}>
+                    Close Application
+                  </button>
+                </div>
               )}
             </div>
           ))
