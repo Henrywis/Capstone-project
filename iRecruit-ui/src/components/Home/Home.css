@@ -48,6 +48,7 @@
 .close-application-button {
   transform: rotateY(180deg);
 }
+
 .carousel-container {
   position: relative;
   height: 60px; 
