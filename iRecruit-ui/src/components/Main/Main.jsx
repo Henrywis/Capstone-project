@@ -36,6 +36,12 @@ function Main() {
   const [dislikedPosts, setDislikedPosts] = useState([]);
   const [preferredPosts, setPreferredPosts] = useState([]);
 
+  const [userInteractions, setUserInteractions] = useState({
+    likedPosts: [],
+    dislikedPosts: [],
+    preferredPosts: [],
+  });
+
   // Function to fetch additional information (location and summary) for each job
   const fetchPostsInfo = async (jobData) => {
     setLoading(true);
@@ -114,25 +120,38 @@ function Main() {
 
   };
 
-  // Function to handle clicking on "Start Application" button
+  // Function to handle clicking on "Start Application" button and mark post as preferred
   const handleStartApplication = (jobId) => {
     setSelectedPostId(jobId);
     setFlippedPostId(jobId);
 
     const preferredPost = posts.find((post) => post.slug === jobId);
     if (preferredPost) {
-      setPreferredPosts((prevPreferredPosts) => [...prevPreferredPosts, preferredPost]);
+      setUserInteractions((prevInteractions) => ({
+        ...prevInteractions,
+        preferredPosts: [...prevInteractions.preferredPosts, preferredPost],
+      }));
     }
   };
 
   // Function to handle clicking on "Like" button
   const handleLike = (job) => {
     setLikedPosts((prevLikedPosts) => [...prevLikedPosts, job]);
+
+    setUserInteractions((prevInteractions) => ({
+      ...prevInteractions,
+      likedPosts: [...prevInteractions.likedPosts, job],
+    }));
   };
 
   // Function to handle clicking on "Dislike" button
   const handleDislike = (job) => {
     setDislikedPosts((prevDislikedPosts) => [...prevDislikedPosts, job]);
+
+    setUserInteractions((prevInteractions) => ({
+      ...prevInteractions,
+      dislikedPosts: [...prevInteractions.dislikedPosts, job],
+    }));
   };
 
   const handleApplicationSubmit = (application) => {
@@ -191,7 +210,7 @@ function Main() {
             path="/contact"
             element={<Contact />}
           />
-          <Route path="/feedback" element={<Feedback likedPosts={likedPosts} dislikedPosts={dislikedPosts} preferredPosts={preferredPosts}/>} />
+          <Route path="/feedback" element={<Feedback likedPosts={likedPosts} dislikedPosts={dislikedPosts} preferredPosts={preferredPosts} userInteractions={userInteractions}/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/applications" element={<Applications id={selectedPostId} posts={submittedApplications} />} />
         </Routes>
