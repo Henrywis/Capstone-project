@@ -42,7 +42,41 @@
   overflow-y: auto;
   max-height: 200px;
   display: flex;
+  /* justify-content: space-between; */
+}
+
+.summary-info {
+  /* margin-bottom: 10px; */
+  margin-right: 20px;
+}
+
+.like-dislike-buttons {
   justify-content: space-between;
+}
+
+.like-dislike-buttons button {
+  margin-right: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.like-dislike-buttons button:hover {
+  background-color: blue;
+  color: white;
+}
+
+.like-dislike-buttons button.liked {
+  background-color: red;
+  color: white;
+}
+
+.like-dislike-buttons button.disliked {
+  background-color: red;
+  color: white;
 }
 
 .close-application-button {
