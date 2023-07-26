@@ -9,14 +9,20 @@ export default function Home({
   selectedPostId,
   setSelectedPostId,
   handleApplicationSubmit,
-  loading
+  loading,
+  likedPosts,
+  dislikedPosts,
+  handleLike,
+  handleDislike,
+  handleStartApplication,
+  flippedPostId,
+  setFlippedPostId
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
 
   const [hoveredPost, setHoveredPost] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
-  const [flippedPostId, setFlippedPostId] = useState(null);
 
   const carouselContent = [
     "Polish your Resumes for a better chance",
@@ -56,12 +62,6 @@ export default function Home({
   // Function to handle clicking on "Open Summary" button
   const handleToggleSummary = () => {
     setShowSummary((prevShowSummary) => !prevShowSummary);
-  };
-
-  // Function to handle clicking on "Start Application" button
-  const handleStartApplication = (jobId) => {
-    setSelectedPostId(jobId);
-    setFlippedPostId(jobId);
   };
 
   // Function to handle clicking on "Close Application" button
@@ -130,7 +130,13 @@ export default function Home({
                       </div>
                       {showSummary && (
                         <div className="job-summary">
-                          <p>{job.summary}</p>
+                          <div className="summary-info">
+                            <p>{job.summary}</p>
+                          </div>
+                          <div className="like-dislike-buttons">
+                            <button className={likedPosts.some((post) => post.slug === job.slug) ? "liked" : ""} onClick={() => handleLike(job)}>Like</button>
+                            <button className={dislikedPosts.some((post) => post.slug === job.slug) ? "disliked" : ""} onClick={() => handleDislike(job)}>Dislike</button>
+                          </div>
                         </div>
                       )}
                     </>

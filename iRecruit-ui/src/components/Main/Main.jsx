@@ -29,7 +29,12 @@ function Main() {
   const [submittedApplications, setSubmittedApplications] = useState([]);
   //changes the state of the Applications component based on submitted applns
 
+  const [flippedPostId, setFlippedPostId] = useState(null);
+
   const [loading, setLoading] = useState(false);
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [dislikedPosts, setDislikedPosts] = useState([]);
+  const [preferredPosts, setPreferredPosts] = useState([]);
 
   // Function to fetch additional information (location and summary) for each job
   const fetchPostsInfo = async (jobData) => {
@@ -109,6 +114,27 @@ function Main() {
 
   };
 
+  // Function to handle clicking on "Start Application" button
+  const handleStartApplication = (jobId) => {
+    setSelectedPostId(jobId);
+    setFlippedPostId(jobId);
+
+    const preferredPost = posts.find((post) => post.slug === jobId);
+    if (preferredPost) {
+      setPreferredPosts((prevPreferredPosts) => [...prevPreferredPosts, preferredPost]);
+    }
+  };
+
+  // Function to handle clicking on "Like" button
+  const handleLike = (job) => {
+    setLikedPosts((prevLikedPosts) => [...prevLikedPosts, job]);
+  };
+
+  // Function to handle clicking on "Dislike" button
+  const handleDislike = (job) => {
+    setDislikedPosts((prevDislikedPosts) => [...prevDislikedPosts, job]);
+  };
+
   const handleApplicationSubmit = (application) => {
     setSubmittedApplications((prevApplications) => [
       ...prevApplications,
@@ -146,6 +172,14 @@ function Main() {
                 setSelectedPostId={setSelectedPostId}
                 handleApplicationSubmit={handleApplicationSubmit}
                 loading={loading}
+                likedPosts={likedPosts}
+                handleLike={handleLike}
+                handleDislike={handleDislike}
+                dislikedPosts={dislikedPosts}
+                preferredPosts={preferredPosts}
+                handleStartApplication={handleStartApplication}
+                flippedPostId={flippedPostId}
+                setFlippedPostId={setFlippedPostId}
               />
             }
           />
@@ -157,7 +191,7 @@ function Main() {
             path="/contact"
             element={<Contact />}
           />
-          <Route path="/feedback" element={<Feedback />} />
+          <Route path="/feedback" element={<Feedback likedPosts={likedPosts} dislikedPosts={dislikedPosts} preferredPosts={preferredPosts}/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/applications" element={<Applications id={selectedPostId} posts={submittedApplications} />} />
         </Routes>
