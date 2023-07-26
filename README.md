@@ -29,21 +29,19 @@ PRODUCT SPEC
 User Stories
 
 Required:
-- User can login
-- User can create a Profile
-- User can search for job/internship opportunities
-- User can filter opportunities based on categories
-- User can apply for jobs directly through the platform
-- User can see more information about the job by hovering over the title (OR any other complex User Experience)
-- User can see potential applicants checking out the same job opening
-- User can see their profile
+[x] User can login
+[x] User can create a Profile
+[x] User can search for job/internship opportunities
+[x] User can filter opportunities based on categories
+[x] User can apply for jobs directly through the platform
+[x] User can see more information about the job by hovering over the title (OR any other complex User Experience)
+[x] User can see their profile
 
 Optional:
-- User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected.
+- User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected (UI done, algorithm next)
 - User can get notifications on listings or recruiter interest
-- User can edit their profile information
-- User can see another candidate’s profile
-- User can provide feedback on their account
+[x] User can edit their profile information
+[x] User can provide feedback on their account
 
 Screen Archetypes:
 - ome/Dashboard Screen: Feed Screen
@@ -52,7 +50,7 @@ Screen Archetypes:
 - Notifications Screen
 - Profile Screen
 
-√
+
 Navigation:
 
 - Login/Registration Screen: Allows users to log in or register for  a new account.
@@ -235,6 +233,10 @@ Project Week 7
 
 - Application page/Summary UI
 <div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/00e6f986d0fc4fc7b829a4b8ed829616?sid=90c2ffb3-00b5-4761-a1c0-3a765a0af7a8" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
+- Feedback
+<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/294fe3fa93e84d368a33abe643619026?sid=b2c7ee24-8dc8-423c-8b12-31b3578203de" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
 
 ### WIREFRAME
 ![Capstone_Initial_layout-1](https://github.com/Henrywis/Capstone-project/assets/105118133/e870c07c-9e59-4fae-a601-1737f9eb6d65)

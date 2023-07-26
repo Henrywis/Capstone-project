@@ -41,9 +41,11 @@ export default function Home({
   };
 
   useEffect(() => {
+    const CAROUSEL_FADE_TIMEOUT = 7.8 * 1000;
+    //7.8 seconds
     const interval = setInterval(() => {
       setCarouselIndex((prevIndex) => (prevIndex + 1) % carouselContent.length);
-    }, 7800);
+    }, CAROUSEL_FADE_TIMEOUT);
 
     return () => clearInterval(interval);
   }, []); 
