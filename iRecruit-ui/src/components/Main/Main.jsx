@@ -12,7 +12,7 @@ import Feedback from "../Feedback/Feedback";
 import Applications from "../Applications/Applications";
 import {  Routes, Route } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
-import processUserInteractions from "../data";
+import { processUserInteractions, preprocessText } from "../data";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -65,6 +65,10 @@ function Main() {
             }
           );
           const data = await response.json();
+
+          //Preprocess the summary before storing it in the state
+          const processedSummary = preprocessText(data.summary);
+
           return {
             ...post,
             location: data.location,
@@ -107,13 +111,13 @@ function Main() {
       fetchPostsInfo(jobData); 
       // Fetch additional information for each job
 
-      // Call processUserInteractions with jobData and update the userInteractions state
-      const { likedPosts, dislikedPosts, preferredPosts } = await processUserInteractions(jobData);
-      setUserInteractions({
-        likedPosts: likedPosts,
-        dislikedPosts: dislikedPosts,
-        preferredPosts: preferredPosts,
-      });
+      // // Call processUserInteractions with jobData and update the userInteractions state
+      // const { likedPosts, dislikedPosts, preferredPosts } = await processUserInteractions(jobData);
+      // setUserInteractions({
+      //   likedPosts: likedPosts,
+      //   dislikedPosts: dislikedPosts,
+      //   preferredPosts: preferredPosts,
+      // });
 
     };
     fetchPosts();
