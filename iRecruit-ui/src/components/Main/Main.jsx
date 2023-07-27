@@ -12,6 +12,7 @@ import Feedback from "../Feedback/Feedback";
 import Applications from "../Applications/Applications";
 import {  Routes, Route } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
+import processUserInteractions from "../data";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -42,6 +43,10 @@ function Main() {
     dislikedPosts: [],
     preferredPosts: [],
   });
+
+  //Imported the func to process user interactions and create the dataset
+  //get the dataset
+  const dataset = processUserInteractions();
 
   // Function to fetch additional information (location and summary) for each job
   const fetchPostsInfo = async (jobData) => {
@@ -101,6 +106,15 @@ function Main() {
 
       fetchPostsInfo(jobData); 
       // Fetch additional information for each job
+
+      // Call processUserInteractions with jobData and update the userInteractions state
+      const { likedPosts, dislikedPosts, preferredPosts } = await processUserInteractions(jobData);
+      setUserInteractions({
+        likedPosts: likedPosts,
+        dislikedPosts: dislikedPosts,
+        preferredPosts: preferredPosts,
+      });
+
     };
     fetchPosts();
   }, [apiUrl]);
