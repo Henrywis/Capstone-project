@@ -10,14 +10,14 @@ const preprocessText = (text) => {
   // Convert text to lowercase
   const lowercaseText = text.toLowerCase();
 
-  // Remove punctuation (optional, you can add more punctuation characters if needed)
+  // Remove punctuation
   const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]/g;
   const textWithoutPunctuation = lowercaseText.replace(punctuationRegex, '');
 
   // Tokenize the text into individual words
   const tokens = textWithoutPunctuation.split(/\s+/);
 
-  // Remove stopwords (you can add more stopwords if needed)
+  // Remove stopwords
   const stopwords = new Set([
     "a", "the", "and", "or", "of", "on", "this", "we", "were", "is", "not",
     "these", "are", "an", "in", "stop", "to", "it", "I", "that", "had", "for",
@@ -29,9 +29,9 @@ const preprocessText = (text) => {
   ]);
   const filteredTokens = tokens.filter((token) => !stopwords.has(token));
 
-  // Perform stemming (optional, you can remove this if not needed)
+  // Performing stemming
   const stemmedTokens = filteredTokens.map((token) => {
-    // Apply your own stemming logic here if required
+   //stemming logic
     return token;
   });
 
