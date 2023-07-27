@@ -11,6 +11,7 @@ import Profile from "../Profile/Profile";
 import Feedback from "../Feedback/Feedback";
 import Applications from "../Applications/Applications";
 import {  Routes, Route } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -35,6 +36,12 @@ function Main() {
   const [likedPosts, setLikedPosts] = useState([]);
   const [dislikedPosts, setDislikedPosts] = useState([]);
   const [preferredPosts, setPreferredPosts] = useState([]);
+
+  const [userInteractions, setUserInteractions] = useState({
+    likedPosts: [],
+    dislikedPosts: [],
+    preferredPosts: [],
+  });
 
   // Function to fetch additional information (location and summary) for each job
   const fetchPostsInfo = async (jobData) => {
@@ -114,25 +121,38 @@ function Main() {
 
   };
 
-  // Function to handle clicking on "Start Application" button
+  // Function to handle clicking on "Start Application" button and mark post as preferred
   const handleStartApplication = (jobId) => {
     setSelectedPostId(jobId);
     setFlippedPostId(jobId);
 
     const preferredPost = posts.find((post) => post.slug === jobId);
     if (preferredPost) {
-      setPreferredPosts((prevPreferredPosts) => [...prevPreferredPosts, preferredPost]);
+      setUserInteractions((prevInteractions) => ({
+        ...prevInteractions,
+        preferredPosts: [...prevInteractions.preferredPosts, preferredPost],
+      }));
     }
   };
 
   // Function to handle clicking on "Like" button
   const handleLike = (job) => {
     setLikedPosts((prevLikedPosts) => [...prevLikedPosts, job]);
+
+    setUserInteractions((prevInteractions) => ({
+      ...prevInteractions,
+      likedPosts: [...prevInteractions.likedPosts, job],
+    }));
   };
 
   // Function to handle clicking on "Dislike" button
   const handleDislike = (job) => {
     setDislikedPosts((prevDislikedPosts) => [...prevDislikedPosts, job]);
+
+    setUserInteractions((prevInteractions) => ({
+      ...prevInteractions,
+      dislikedPosts: [...prevInteractions.dislikedPosts, job],
+    }));
   };
 
   const handleApplicationSubmit = (application) => {
@@ -149,6 +169,57 @@ function Main() {
     //Clear user data from localStorage, reset user state
     updateUser(null);
   };
+
+  //DATA GATHERING STAGES FOR RANKING
+
+  // Function to generate a unique identifier for the user
+  const generateUserId = () => {
+    return uuidv4();
+  };
+
+  useEffect(() => {
+    // Generate a unique identifier for the user (if not already present)
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+      userId = generateUserId();
+      localStorage.setItem('userId', userId);
+    }
+  }, []);
+
+  // Function to handle user interactions (likes, dislikes, and preferred posts)
+  const handleUserInteractions = () => {
+    const userLikes = userInteractions.likedPosts.map((post) => post.slug);
+    const userDislikes = userInteractions.dislikedPosts.map((post) => post.slug);
+    const userPreferred = userInteractions.preferredPosts.map((post) => post.slug);
+
+    const userInteractionsData = {
+      likes: userLikes,
+      dislikes: userDislikes,
+      preferred: userPreferred,
+    };
+
+    console.log("User Interactions Data:", userInteractionsData);
+    //temporarily visualizing the data
+
+    // Store user interactions in localStorage
+    localStorage.setItem("userInteractionsData", JSON.stringify(userInteractionsData));
+
+    // Create and store user profile in localStorage
+    const userProfile = {
+      id: localStorage.getItem('userId'),
+      likedPosts: userLikes,
+      dislikedPosts: userDislikes,
+      preferredPosts: userPreferred,
+    };
+
+    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+  };
+
+  // Call the handleUserInteractions function whenever userInteractions state changes
+  useEffect(() => {
+    handleUserInteractions();
+  }, [userInteractions]);
+
 
   return (
     <div className="main">
@@ -191,7 +262,7 @@ function Main() {
             path="/contact"
             element={<Contact />}
           />
-          <Route path="/feedback" element={<Feedback likedPosts={likedPosts} dislikedPosts={dislikedPosts} preferredPosts={preferredPosts}/>} />
+          <Route path="/feedback" element={<Feedback userInteractions={userInteractions}/>} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/applications" element={<Applications id={selectedPostId} posts={submittedApplications} />} />
         </Routes>
@@ -201,5 +272,3 @@ function Main() {
 }
 
 export default Main;
-
-

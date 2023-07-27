@@ -1,55 +1,37 @@
 import React from "react";
-import "./Feedback.css";
+import './Feedback.css';
 
-const Feedback = ({ likedPosts, dislikedPosts, preferredPosts }) => {
+const Feedback = ({ userInteractions }) => {
   return (
     <div className="feedback">
-      <div className="feedback-container">
-        <div className="feedback-box">
-          <div className="box-title">
-            <h2>Likes</h2>
-          </div>
-          <div className="feedback-list">
-            <ul>
-              {likedPosts.map((post) => (
-                <li key={post.slug}>
-                  <strong>{post.title}</strong> - {post.location}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className="feedback-box">
-          <div className="box-title">
-            <h2>Dislikes</h2>
-          </div>
-          <div className="feedback-list">
-            <ul>
-              {dislikedPosts.map((post) => (
-                <li key={post.slug}>
-                  <strong>{post.title}</strong> - {post.location}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className="feedback-box">
-          <div className="box-title">
-            <h2>Preferred</h2>
-          </div>
-          <div className="feedback-list">
-            <ul>
-              {preferredPosts.map((post) => (
-                <li key={post.slug}>
-                  <strong>{post.title}</strong> - {post.location}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+      <h2>User Interactions</h2>
+      <div>
+        <h3>Liked Posts:</h3>
+        <ul>
+          {userInteractions.likedPosts.map((post) => (
+            <li key={post.slug}>{post.title}</li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3>Disliked Posts:</h3>
+        <ul>
+          {userInteractions.dislikedPosts.map((post) => (
+            <li key={post.slug}>{post.title}</li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3>Preferred Posts:</h3>
+        <ul>
+          {userInteractions.preferredPosts.map((post) => (
+            <li key={post.slug}>{post.title}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
 };
 
 export default Feedback;
+
