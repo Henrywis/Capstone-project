@@ -111,14 +111,6 @@ function Main() {
       fetchPostsInfo(jobData); 
       // Fetch additional information for each job
 
-      // // Call processUserInteractions with jobData and update the userInteractions state
-      // const { likedPosts, dislikedPosts, preferredPosts } = await processUserInteractions(jobData);
-      // setUserInteractions({
-      //   likedPosts: likedPosts,
-      //   dislikedPosts: dislikedPosts,
-      //   preferredPosts: preferredPosts,
-      // });
-
     };
     fetchPosts();
   }, [apiUrl]);
