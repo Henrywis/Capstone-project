@@ -12,6 +12,7 @@ import Feedback from "../Feedback/Feedback";
 import Applications from "../Applications/Applications";
 import {  Routes, Route } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
+import { processUserInteractions, preprocessText } from "../data";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -43,6 +44,33 @@ function Main() {
     preferredPosts: [],
   });
 
+  // //Imported the func to process user interactions and create the dataset
+  // //get the dataset
+  // const dataset = processUserInteractions();
+
+  useEffect(() => {
+    // Function to get user interactions from local storage
+    const fetchUserInteractions = () => {
+      const storedUserInteractionsData = JSON.parse(localStorage.getItem("userInteractionsData"));
+      const likedPostSlugs = storedUserInteractionsData?.likes || [];
+      const dislikedPostSlugs = storedUserInteractionsData?.dislikes || [];
+      const preferredPostSlugs = storedUserInteractionsData?.preferred || [];
+  
+      const likedPosts = posts.filter((post) => likedPostSlugs.includes(post.slug));
+      const dislikedPosts = posts.filter((post) => dislikedPostSlugs.includes(post.slug));
+      const preferredPosts = posts.filter((post) => preferredPostSlugs.includes(post.slug));
+  
+      setUserInteractions({
+        likedPosts,
+        dislikedPosts,
+        preferredPosts,
+      });
+    };
+  
+    fetchUserInteractions();
+  }, [posts]);
+  
+
   // Function to fetch additional information (location and summary) for each job
   const fetchPostsInfo = async (jobData) => {
     setLoading(true);
@@ -60,6 +88,10 @@ function Main() {
             }
           );
           const data = await response.json();
+
+          //Preprocess the summary before storing it in the state
+          const processedSummary = preprocessText(data.summary);
+
           return {
             ...post,
             location: data.location,
@@ -101,6 +133,7 @@ function Main() {
 
       fetchPostsInfo(jobData); 
       // Fetch additional information for each job
+
     };
     fetchPosts();
   }, [apiUrl]);
