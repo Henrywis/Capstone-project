@@ -44,9 +44,32 @@ function Main() {
     preferredPosts: [],
   });
 
-  //Imported the func to process user interactions and create the dataset
-  //get the dataset
-  const dataset = processUserInteractions();
+  // //Imported the func to process user interactions and create the dataset
+  // //get the dataset
+  // const dataset = processUserInteractions();
+
+  useEffect(() => {
+    // Function to get user interactions from local storage
+    const fetchUserInteractions = () => {
+      const storedUserInteractionsData = JSON.parse(localStorage.getItem("userInteractionsData"));
+      const likedPostSlugs = storedUserInteractionsData?.likes || [];
+      const dislikedPostSlugs = storedUserInteractionsData?.dislikes || [];
+      const preferredPostSlugs = storedUserInteractionsData?.preferred || [];
+  
+      const likedPosts = posts.filter((post) => likedPostSlugs.includes(post.slug));
+      const dislikedPosts = posts.filter((post) => dislikedPostSlugs.includes(post.slug));
+      const preferredPosts = posts.filter((post) => preferredPostSlugs.includes(post.slug));
+  
+      setUserInteractions({
+        likedPosts,
+        dislikedPosts,
+        preferredPosts,
+      });
+    };
+  
+    fetchUserInteractions();
+  }, [posts]);
+  
 
   // Function to fetch additional information (location and summary) for each job
   const fetchPostsInfo = async (jobData) => {
