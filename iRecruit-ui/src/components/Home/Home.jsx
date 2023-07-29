@@ -79,7 +79,7 @@ export default function Home({
       <div className="carousel-container">
         {carouselContent.map((content, index) => (
           <div
-            className={`carousel-item ${index === 0 ? "active" : ""}`}
+            className={`carousel-item ${index === carouselIndex ? "active" : ""}`}
             key={index}
           >
             <h2><strong>{content}</strong></h2>
