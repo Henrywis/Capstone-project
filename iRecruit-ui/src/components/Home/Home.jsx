@@ -23,6 +23,7 @@ export default function Home({
 
   const [hoveredPost, setHoveredPost] = useState(null);
   const [showSummary, setShowSummary] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   const carouselContent = [
     "Polish your Resumes for a better chance",

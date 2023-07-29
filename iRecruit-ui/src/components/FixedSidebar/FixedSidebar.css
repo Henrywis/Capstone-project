@@ -104,6 +104,7 @@
     flex: 2;
     padding: 30px;
     height: 250px;
+    overflow-y: auto;
   }
   
   .sidebar-box2 p {

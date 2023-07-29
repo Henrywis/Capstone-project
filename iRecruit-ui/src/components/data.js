@@ -85,21 +85,32 @@ const tokenizeText = (text) => {
   };
 // Function to calculate TF-IDF scores for job post summaries
 const calculateTFIDF = async (jobPosts) => {
+
+      // Check if jobPosts is valid (not null or undefined)
+    if (!jobPosts || !Array.isArray(jobPosts) || jobPosts.length === 0) {
+        throw new Error("Invalid job posts data for calculating TF-IDF.");
+    }
     // Step 1: Build a corpus by concatenating all preprocessed summaries
-    const preprocessedSummaries = await Promise.all(
+    const preprocessedTitles = await Promise.all(
         jobPosts.map(async (post) => {
-            const processedSummary = await preprocessText(post.summary);
-            return processedSummary;
+
+            if (!post.title) {
+                console.error(`Job post with slug '${post.slug}' is missing a title.`);
+                // Provide a default value or skip the job post if title is missing
+                return "";
+            }
+            const processedTitle= await preprocessText(post.title);
+            return processedTitle;
     }));
   
     // Step 2: Tokenization
-    const tokens = tokenizeText(preprocessedSummaries.join(" "));
+    const tokens = tokenizeText(preprocessedTitles.join(" "));
   
     // Step 3: Calculate Term Frequency (TF)
     const termFrequency = {};
-    preprocessedSummaries.forEach((summary) => {
-        const summaryTokens = tokenizeText(summary);
-        summaryTokens.forEach((token) => {
+    preprocessedTitles.forEach((title) => {
+        const titleTokens = tokenizeText(title);
+        titleTokens.forEach((token) => {
             termFrequency[token] = (termFrequency[token] || 0) + 1;
         });
     });
@@ -111,7 +122,7 @@ const calculateTFIDF = async (jobPosts) => {
     });
 
     jobPosts.forEach((post) => {
-        const postTokens = tokenizeText(post.summary);
+        const postTokens = tokenizeText(post.title);
         const uniqueTokens = new Set(postTokens);
         uniqueTokens.forEach((token) => {
             documentFrequency[token] = (documentFrequency[token] || 0) + 1;
@@ -129,7 +140,7 @@ const calculateTFIDF = async (jobPosts) => {
   
     // Step 6: Calculate TF-IDF scores
     const tfidfScores = jobPosts.map((post) => {
-        const postTokens = tokenizeText(post.summary);
+        const postTokens = tokenizeText(post.title);
         const tfidfVector = {};
         postTokens.forEach((token) => {
             tfidfVector[token] = (termFrequency[token] || 0) * inverseDocumentFrequency[token];
@@ -150,8 +161,31 @@ const calculateTFIDF = async (jobPosts) => {
     jobPosts.forEach((post, index) => {
         post.tfidf = tfidfScores[index];
     });
+
+
+
   
-    return jobPosts;
+   // Return the TF-IDF vectorizer function
+    const tfidfVectorizer = async (text) => {
+        const processedText = await preprocessText(text);
+        const tokens = tokenizeText(processedText);
+        const tfidfVector = {};
+
+        tokens.forEach((token) => {
+            tfidfVector[token] = (termFrequency[token] || 0) * inverseDocumentFrequency[token];
+        });
+
+        // Normalize the vector
+        const vectorValues = Object.values(tfidfVector);
+        const euclideanNorm = Math.sqrt(vectorValues.reduce((sum, value) => sum + value * value, 0));
+        for (const token in tfidfVector) {
+            tfidfVector[token] /= euclideanNorm;
+        }
+
+        return tfidfVector;
+    };
+
+    return { jobPosts, tfidfVectorizer };
 };
 
 // Function to get user interactions from local storage
@@ -181,22 +215,57 @@ const processUserInteractions = async (jobPosts) => {
 
 //////////////////////////
 
-// Test the calculateTFIDF function
-const testTFIDF = async () => {
-    const jobPosts = [
-      { summary: "We are hiring software engineers" },
-      { summary: "Another sample summary for job post 2" },
-      { summary: "Your work matters and is essential to the evolution growth and success of our businessGROWTH" },
-      { summary: "Continually learn about investments and the financial markets to address the individual clients investment needs" },
-      { summary: "We are hiring software developers" },
-    ];
-    const postsWithTFIDF = await calculateTFIDF(jobPosts);
-    console.log("Job Posts with TF-IDF:", postsWithTFIDF);
+
+
+// Function to calculate cosine similarity between two vectors
+const calculateCosineSimilarity = (vector1, vector2) => {
+    // Check if either vector is undefined or null
+    if (!vector1 || !vector2 || typeof vector1 !== "object" || typeof vector2 !== "object") {
+      throw new Error("Invalid vectors for calculating cosine similarity.");
+    }
+  
+    const vectorValues1 = Object.values(vector1);
+    const vectorValues2 = Object.values(vector2);
+  
+    // Check if vectorValues1 and vectorValues2 are valid arrays
+    if (!Array.isArray(vectorValues1) || !Array.isArray(vectorValues2)) {
+      throw new Error("Invalid vectors for calculating cosine similarity.");
+    }
+  
+    // Check if vector lengths are equal
+    if (vectorValues1.length !== vectorValues2.length) {
+      throw new Error("Vector lengths do not match for calculating cosine similarity.");
+    }
+
+    // Calculate the dot product of the two vectors
+    const dotProduct = vectorValues1.reduce((sum, value, index) => sum + value * vectorValues2[index], 0);
+
+    // Calculate the Euclidean norms of the vectors
+    const vector1Norm = Math.sqrt(vectorValues1.reduce((sum, value) => sum + value * value, 0));
+    const vector2Norm = Math.sqrt(vectorValues2.reduce((sum, value) => sum + value * value, 0));
+
+    // Calculate the cosine similarity
+    const cosineSimilarity = dotProduct / (vector1Norm * vector2Norm);
+    return cosineSimilarity;
   };
   
-  // Call the testTFIDF function to test the TF-IDF calculation
-  testTFIDF();
-/////////////////////////
+const buildRankingModel = async (jobPosts, userInteractions) => {
+    const { jobPosts: updatedJobPosts, tfidfVectorizer } = await calculateTFIDF(jobPosts);
+    // const userProfileVector = createUserProfileVector(userInteractions, tfidfVectorizer);
   
-  export { processUserInteractions, preprocessText, calculateTFIDF };
+    // Calculate cosine similarity and add to job posts
+    const rankedJobPosts = updatedJobPosts.map((post) => ({
+      ...post,
+      cosineSimilarity: calculateCosineSimilarity(userInteractions, post.tfidf || {}),
+    }));
+  
+    // Sort the job posts based on cosine similarity in descending order
+    rankedJobPosts.sort((a, b) => b.cosineSimilarity - a.cosineSimilarity);
+  
+    return rankedJobPosts;
+  };
+export { processUserInteractions, preprocessText, calculateTFIDF, buildRankingModel, calculateCosineSimilarity };
+
+
+
 

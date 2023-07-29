@@ -5,7 +5,7 @@ import "./Sidebar.css";
 import FixedSidebar from "../FixedSidebar/FixedSidebar";
 import { BsFillGrid1X2Fill, BsFillFilePersonFill, BsChatLeftTextFill, BsBuildingFillCheck } from 'react-icons/bs';
 
-export default function Sidebar( {handleCategoryClick} ) {
+export default function Sidebar( { handleCategoryClick, preferredPosts, setPreferredPosts, setPreferredPostsCount, fetchPostsInfo, posts, userInteractions} ) {
 
   const[isOpen, setIsOpen] = useState(false);
   //To set the state of the dropdown menu to be closed by default
@@ -92,7 +92,7 @@ export default function Sidebar( {handleCategoryClick} ) {
           <BsBuildingFillCheck />
         </Link>
       </div>
-      <FixedSidebar />
+      <FixedSidebar preferredPosts={preferredPosts} setPreferredPosts={setPreferredPosts} setPreferredPostsCount={setPreferredPostsCount} fetchPostsInfo={fetchPostsInfo} posts={posts} userInteractions={userInteractions}/>
     </div>
   );
 }

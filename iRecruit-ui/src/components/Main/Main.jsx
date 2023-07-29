@@ -12,7 +12,7 @@ import Feedback from "../Feedback/Feedback";
 import Applications from "../Applications/Applications";
 import {  Routes, Route } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
-import { processUserInteractions, preprocessText } from "../data";
+import { processUserInteractions, preprocessText, buildRankingModel, calculateCosineSimilarity } from "../data";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -44,9 +44,7 @@ function Main() {
     preferredPosts: [],
   });
 
-  // //Imported the func to process user interactions and create the dataset
-  // //get the dataset
-  // const dataset = processUserInteractions();
+  const [preferredPostsCount, setPreferredPostsCount] = useState(0);
 
   useEffect(() => {
     // Function to get user interactions from local storage
@@ -72,52 +70,47 @@ function Main() {
   
 
   // Function to fetch additional information (location and summary) for each job
-  const fetchPostsInfo = async (jobData) => {
-    setLoading(true);
-    const postsWithInfo = await Promise.all(
-      jobData.map(async (post) => {
-        try {
-          const response = await fetch(
-            `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
-            {
-              method: "GET",
-              headers: {
-                "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
-                "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
-              },
-            }
-          );
-          const data = await response.json();
-
-          //Preprocess the summary before storing it in the state
-          const processedSummary = preprocessText(data.summary);
-
-          return {
-            ...post,
-            location: data.location,
-            summary: data.summary,
-          };
-        } catch (error) {
-          console.error("Error fetching post data:", error);
-          return post;
-        }
-      })
-    );
-
-    setPosts(postsWithInfo);
-    //after render loading updates to false
-    setLoading(false);
-  };
-  //promise.all lets all promises be fulfilled before final function 
-  //is run. in this case, fetching extra info with the slug url for each post.
-
-
-  //default fetch
   useEffect(() => {
     let pageSize = 60;
 
+    const fetchPostsInfo = async (jobData) => {
+      setLoading(true);
+      const postsWithInfo = await Promise.all(
+        jobData.map(async (post) => {
+          try {
+            const response = await fetch(
+              `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
+              {
+                method: "GET",
+                headers: {
+                  "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+                  "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+                },
+              }
+            );
+            const data = await response.json();
+
+            const processedSummary = preprocessText(data.summary);
+
+            return {
+              ...post,
+              location: data.location,
+              summary: data.summary,
+            };
+          } catch (error) {
+            console.error("Error fetching post data:", error);
+            return post;
+          }
+        })
+      );
+
+      setPosts(postsWithInfo);
+      setLoading(false);
+    };
+
     const fetchPosts = async () => {
-      const response = await fetch(`${apiUrl}&pageSize=${pageSize}`,
+      const response = await fetch(
+        `${apiUrl}&pageSize=${pageSize}`,
         {
           method: "GET",
           headers: {
@@ -129,14 +122,16 @@ function Main() {
       const data = await response.json();
 
       const jobData = data.data;
-      // console.log(jobData);
+      fetchPostsInfo(jobData);
 
-      fetchPostsInfo(jobData); 
-      // Fetch additional information for each job
-
+      if (preferredPostsCount >= 3) {
+        const rankedJobPosts = await getRankedJobPosts();
+        setPosts(rankedJobPosts);
+      }
     };
+
     fetchPosts();
-  }, [apiUrl]);
+  }, [apiUrl, preferredPostsCount]);
 
 
   const handleCategoryClick = (category) => {
@@ -154,7 +149,7 @@ function Main() {
 
   };
 
-  // Function to handle clicking on "Start Application" button and mark post as preferred
+  // Function to handle clicking on "Start Application" button and mark post as preferred //////////////////////////
   const handleStartApplication = (jobId) => {
     setSelectedPostId(jobId);
     setFlippedPostId(jobId);
@@ -165,6 +160,7 @@ function Main() {
         ...prevInteractions,
         preferredPosts: [...prevInteractions.preferredPosts, preferredPost],
       }));
+      setPreferredPostsCount((count) => count + 1);
     }
   };
 
@@ -253,6 +249,40 @@ function Main() {
     handleUserInteractions();
   }, [userInteractions]);
 
+// Function to get the ranked job posts based on user preferences
+const getRankedJobPosts = async () => {
+  // Step 1: Preprocess user interactions and job posts data
+  const userInteractionsData = localStorage.getItem("userInteractionsData");
+  const userInteractions = userInteractionsData ? JSON.parse(userInteractionsData) : {};
+  const userLikes = userInteractions.likes || [];
+  const userDislikes = userInteractions.dislikes || [];
+  const userPreferred = userInteractions.preferred || [];
+
+  // Step 2: Get the TF-IDF vectors for job posts and user profile
+  const jobPosts = await fetchJobPosts();
+  const jobPostsData = jobPosts.map((post) => ({ ...post, title: post.title || "" }));
+  const jobPostsTFIDF = await calculateTFIDF(jobPostsData);
+  const userProfileTFIDF = await calculateTFIDF(userPreferred.map((postSlug) => {
+    const post = jobPosts.find((post) => post.slug === postSlug);
+    return post ? { ...post, title: post.title || "" } : { title: "" };
+  }));
+
+  // Step 3: Calculate cosine similarity between job posts and user profile
+  const rankedPosts = jobPostsData.map((post) => {
+    const postVector = jobPostsTFIDF[post.title];
+    const similarityScore = calculateCosineSimilarity(userProfileTFIDF, postVector);
+    return {
+      ...post,
+      similarityScore,
+    };
+  });
+
+  // Step 4: Sort the job posts based on similarity score (descending order)
+  rankedPosts.sort((a, b) => b.similarityScore - a.similarityScore);
+
+  return rankedPosts;
+};
+
 
   return (
     <div className="main">
@@ -264,7 +294,14 @@ function Main() {
         url={url}
       />
       <div className="content">
-        <Sidebar handleCategoryClick={handleCategoryClick} />
+        <Sidebar 
+        handleCategoryClick={handleCategoryClick} 
+        preferredPost={getRankedJobPosts}
+        setPreferredPosts={setPreferredPosts}
+        setPreferredPostsCount={setPreferredPostsCount}
+        posts={posts.slice(0, 5)}
+        userInteractions={userInteractions}
+        />
         <Routes>
           <Route
             path="/*"
