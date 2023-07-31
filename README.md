@@ -47,7 +47,7 @@ Screen Archetypes:
 - ome/Dashboard Screen: Feed Screen
 - Applications list/Rooms Screen
 - Current Application Screen
-- Notifications Screen
+- Recommendation/Status bar
 - Profile Screen
 
 
@@ -57,7 +57,7 @@ Navigation:
 - Home/Dashboard Screen/Feed Screen: Displays  a feed of internship/job opportunities based on the user’s categories of interest.
 - Applications List/Rooms Screen: Shows a list of all the applications the user has submitted.
 - Current Application Screen: Provides information about a specific application (including its status - Shortlisted, Rejected, Pending)
-- Notifications Screen: Notifies the user about new internship listings or recruiter interest
+- Recommendation/Status bar: Shows the application status and suggested jobs (based on user interactions)
 - Profile Screen: Displays the user’s profile information (and allows them to edit it)
 
 DATA MODEL
@@ -107,14 +107,12 @@ Submits a new application for a job/internship
 Updates the user’s profile information
 - GET/api/profile{id}
 Retrieves the profile information of self/another candidate
-- GET /api/notifications
-Retrieves the user’s notifications
+- GET /api/recommendations
+Retrieves list of jobs after ranking performed
 
 
 Technical Challenges
 //For your project, you should demonstrate that you can apply what you’ve learned so far and expand on that knowledge to write code and implement features that go beyond the scope of the projects you worked on during CodePath.
-
-//Based on the general idea and direction of your project requirements, your intern manager will create at least two (2) Technical Challenges for you. This section is all about explaining what they are and how you’re planning to tackle them - you’ll work together with your manager to fill it out. 
 
 Technical Challenge #1 
 RECOMMENDATION ENGINE
@@ -123,7 +121,7 @@ For this project, I will be developing a recommendation engine that suggests int
 - I will store this interaction data and the user profiles, jobs/internships in my postgreSQL database
 
 
-2. DATA PROCESSING:- I will convert the data (categorical data such as category clicks) into numerical data to be stored in my database, suitable for analysis.
+2. DATA PROCESSING:- I will convert the data (categorical data such as category clicks) into numerical data to be stored in my database, suitable for analysis. Using TF-IDF Vectorization to covert the processed text to numerical representations to feed into the ranking model.
 
 3. DEFINE SIMILARITY MATRIX
 I will be using the Cosine Similarity metric to measure the similarity between a user and the job/internship listing 
@@ -158,39 +156,39 @@ We also encourage you to leverage project tracking tools such as GitHub Issues o
 
 MU Week
 
-Project Week 1
+Project Week 1 (Internship week 4) 07/03 - 07/07
 [x] Database with object models created 
 [x] User can see listings on landing page
 [x] User can log in/sign up
 [x] Page updates on login depending on user
  
-Project Week 2
+Project Week 2 (Internship week 5) 07/10 - 07/ 14
 [x] User can filter opportunities based on categories
 [x] User can search for job/internship opportunities
 [x] User can apply for jobs directly through the platform
 
-Project 3
-[] User can get job ranking and suggestion based on category clicks
+Project 3 (Internship week 6): 07/17 - 07/21
+[x] User can get job ranking and suggestion based on category clicks
 [x] dropdown for categories (consider icons too)
 [x] UI for either dropdown/categories/recommendation/profile - Implemented Carousel & Application page UI
-[x] User can see & edit their profile
+[x] User can see & edit their profile (stretch)
 
-Project Week 4
-[x] User can see & edit their profile (cont.)
-[] User can get job ranking and suggestion based on category clicks
+Project Week 4 (Internship week 7): 07/24 - 07/28
+[x] User can see & edit their profile (stretch cont.)
+[x] User can get job ranking and suggestion based on category clicks
 
-Project Week 5
+Project Week 5 (Internship week 8): 07/31 - 08/04
 [x] User can hover over a listing to see more information
 [x] Loading State
 [] Implement caching
 
-Project Week 6
+Project Week 6 (Internship week 9): 08/07 - 08/11
 [] Implement caching
 [] User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected. (Optional)
-[] Start fixing bugs
+[] Fix bugs/ Do demo
 
-Project Week 7
-[] If needed, keep fixing bugs
+Project Week 7 (Internship week 10): 08/14 - 08/18
+[] Codebase week
 
 # PAGES
 
@@ -215,11 +213,7 @@ Project Week 7
 - Track Applications/Candidates bar
 
 # ENDPOINTS
-
-- User Registration and Authentication
-- Candidate endpoint
-- Recruiter/Employer Endpoint
-
+- See "API routes"
 
 # CURRENT MODIFICATIONS
 - Applications + Status bar
