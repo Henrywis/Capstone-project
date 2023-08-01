@@ -30,8 +30,18 @@ export const seedDatabase = async (category) => {
     const data = await response.json();
     const postData = data.data;
 
+    // Add new fields to the user data
+    userData.forEach((user) => {
+      user.status = user.status || ''; 
+      user.raceEthnicity = user.raceEthnicity || [];
+      user.genderSexuality = user.genderSexuality|| [];
+      user.name = user.name || '';
+    });
+
     // Then seed the User and Post data
-    await User.bulkCreate(userData);
+    await User.bulkCreate(userData, {
+      individualHooks: true,
+    });
     console.log('User data has been seeded!');
 
     await Post.bulkCreate(postData);
