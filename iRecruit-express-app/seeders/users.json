@@ -1,26 +1,29 @@
 [
     {
-      "id": "1",
       "username": "john_doe",
       "email": "henry.cavill@example.com",
       "password": "password123",
-      "name": "Henry Cavill",
-      "bio": "Recent graduate passionate about web development.",
-      "categories": ["tech", "energy"],
-      "skills": ["HTML", "CSS", "JavaScript", "React"],
-      "education": "Bachelor's Degree in Computer Science",
-      "experience": "2 years of internship experience"
+      "status": "Student",
+      "raceEthnicity": ["Black/Afro-Caribbean/Afro-Latinx", "Hispanic/Latinx"],
+      "genderSexuality": ["Cisgender Man", "Gender non-conforming/Non-Binary"],
+      "name": "John Doe"
     },
     {
-      "id": "2",
       "username": "jane_smith",
       "email": "jane.smith@example.com",
       "password": "password456",
-      "name": "Jane Smith",
-      "bio": "Experienced project manager with a focus on agile methodologies.",
-      "categories": ["finance", "education"],
-      "skills": ["Project Management", "Agile", "Scrum", "Leadership"],
-      "education": "Master's Degree in Business Administration",
-      "experience": "5 years of project management experience"
+      "status": "Student",
+      "raceEthnicity": ["White (Non-Hispanic/Latinx)", "Asian/Asian-American"],
+      "genderSexuality": ["Cisgender Woman", "Transgender Woman"],
+      "name": "Jane Smith"
+    },
+    {
+      "username": "mark_zeek",
+      "email": "mark.zeek@example.com",
+      "password": "password789",
+      "status": "Student",
+      "raceEthnicity": ["Asian/Asian-American"],
+      "genderSexuality": ["Transgender Man"],
+      "name": "Mark Zeek"
     }
 ]
