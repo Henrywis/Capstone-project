@@ -20,7 +20,7 @@ Overview
 Category: [Recruiting]
 
 Story: 
-[A recruiting website, where users and recruiters have profiles, and candidates (users) get connected to the latest internship opportunities, based on their categories of interest. Every candidate application is done in one Application room and candidates can get more listings based on the most clicked category. Candidates may be able to track the progress of each application to see which is Accepted, Rejected or Pending.]
+[A recruiting website strictly for students who fulful diversity requirements, where users, in this case, students (and recruiters) have profiles, and students (users) get connected to the latest internship opportunities, based on their categories of interest. Every candidate application is done in the Application room of that job and candidates can get more listings based on the most clicked title feature. Candidates "may" be able to track the progress of each application to see which is Accepted, Rejected or Pending.]
 Market: [ college students]
 Habit: [Internship Recruiting Seasons]
 Scope: [Internship listings]
@@ -35,20 +35,25 @@ Required:
 [x] User can filter opportunities based on categories
 [x] User can apply for jobs directly through the platform
 [x] User can see more information about the job by hovering over the title (OR any other complex User Experience)
-[x] User can see their profile
+[x] Loading state for any fetch delays
 
-Optional:
+
+Optional  (Stretch):
+[x] User can see their profile
 - User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected (UI done, algorithm next)
 - User can get notifications on listings or recruiter interest
 [x] User can edit their profile information
 [x] User can provide feedback on their account
 
 Screen Archetypes:
-- ome/Dashboard Screen: Feed Screen
+- Home/Dashboard Screen: Feed Screen
 - Applications list/Rooms Screen
 - Current Application Screen
 - Recommendation/Status bar
 - Profile Screen
+- Feedback Screen
+- About Screen
+- Contact Screen
 
 
 Navigation:
@@ -59,19 +64,20 @@ Navigation:
 - Current Application Screen: Provides information about a specific application (including its status - Shortlisted, Rejected, Pending)
 - Recommendation/Status bar: Shows the application status and suggested jobs (based on user interactions)
 - Profile Screen: Displays the user’s profile information (and allows them to edit it)
+- Feedback Screen:  Displays a mapped user interaction based on the user's liked, disliked and preferred posts (preferred posts are any on which 'Start Application' is clicked)
+- About Screen: Displays general information about the site
+- Contact Screen: Displays the contact information of the admin customer service (Optional)
 
 DATA MODEL
 USER:
-• id
 • username
 • password
 • email
+• staus
+• race/Ethnicity
+• gender/Sexuality
 • name
-• bio
-• preference (Categories)
-• skills
-• education
-• experience
+
 
 APPLICATION:
 • id
@@ -83,7 +89,7 @@ JOB/INTERNSHIP:
 • id
 • title
 • description
-• categories
+• categories (not provided)
 • recruiters (optional)
 • applicants (optional)
 
