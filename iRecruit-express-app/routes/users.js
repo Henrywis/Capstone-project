@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Route for user registration
 router.post('/users', async (req, res) => {
-  const { username, password, email } = req.body;
+  const { username, email, password, status, raceEthnicity, genderSexuality, name } = req.body;
 
   try {
     //For new user reg to have unique username and email Check if username or email already exists
@@ -25,7 +25,7 @@ router.post('/users', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
-    const newUser = await User.create({ username, password: hashedPassword, email });
+    const newUser = await User.create({ username, email, password: hashedPassword, status, raceEthnicity, genderSexuality, name });
 
     // Set the user in the session
     req.session.user = newUser;
@@ -70,3 +70,4 @@ router.post('/users/login', async (req, res) => {
 });
 
 export default router;
+

@@ -180,6 +180,7 @@ Project Week 4 (Internship week 7): 07/24 - 07/28
 Project Week 5 (Internship week 8): 07/31 - 08/04
 [x] User can hover over a listing to see more information
 [x] Loading State
+[x] Fix Signup to be strictly for Underrepresented Students.
 [] Implement caching
 
 Project Week 6 (Internship week 9): 08/07 - 08/11
@@ -231,6 +232,8 @@ Project Week 7 (Internship week 10): 08/14 - 08/18
 - Feedback
 <div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/294fe3fa93e84d368a33abe643619026?sid=b2c7ee24-8dc8-423c-8b12-31b3578203de" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
 
+- Fix SignUp
+<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/88a434f91afb471586877c887444f172?sid=1d99ba16-ae1a-4b64-a498-564fe56edc13" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
 
 ### WIREFRAME
 ![Capstone_Initial_layout-1](https://github.com/Henrywis/Capstone-project/assets/105118133/e870c07c-9e59-4fae-a601-1737f9eb6d65)
