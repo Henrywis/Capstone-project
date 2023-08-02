@@ -2,11 +2,23 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import { User } from '../models/user.js';
 import { Op } from 'sequelize';
+import memcache from '../memcache';
 
 const router = express.Router();
 
+const FIVE_MINUTES = 5 * 60 * 10000;
+// 5 minutes in milliseconds
+
 // Route for user registration
 router.post('/users', async (req, res) => {
+  // Check if data is in cache
+  const cachedData = memcache.get('users:signup');
+
+  if (cachedData) {
+    // Data found in cache, return it
+    return res.json(cachedData);
+  }
+  
   const { username, email, password, status, raceEthnicity, genderSexuality, name } = req.body;
 
   try {
@@ -27,6 +39,10 @@ router.post('/users', async (req, res) => {
     // Create a new user
     const newUser = await User.create({ username, email, password: hashedPassword, status, raceEthnicity, genderSexuality, name });
 
+    // Cache the fetched data with an expiration (5 minutes)
+    memcache.set('users:signup', newUser, Date.now() + FIVE_MINUTES);
+    //(key, value, optional timestamp)
+
     // Set the user in the session
     req.session.user = newUser;
 
@@ -40,6 +56,14 @@ router.post('/users', async (req, res) => {
 
 // Route for user login
 router.post('/users/login', async (req, res) => {
+  // Check if data is in cache
+  const cachedData = memcache.get('users:login');
+
+  if (cachedData) {
+    // Data found in cache, return it
+    return res.json(cachedData);
+  }
+
   const { username, password } = req.body;
   //could be email, password too
 
@@ -57,6 +81,9 @@ router.post('/users/login', async (req, res) => {
     if (!isValidPassword) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
+
+    // Cache the fetched data with an expiration (5 minutes)
+    memcache.set('users:login', user, Date.now() + FIVE_MINUTES);
 
     // If log in successful, Set the user in the session
     req.session.user = user;
