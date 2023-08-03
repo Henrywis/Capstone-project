@@ -12,7 +12,8 @@ import Feedback from "../Feedback/Feedback";
 import Applications from "../Applications/Applications";
 import {  Routes, Route } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
-import { processUserInteractions, preprocessText, buildRankingModel, calculateCosineSimilarity } from "../data";
+import { buildRankingModel } from "../data";
+import { cache } from "webpack";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -45,6 +46,10 @@ function Main() {
   });
 
   const [preferredPostsCount, setPreferredPostsCount] = useState(0);
+  //////
+  const [rankedRecommendations, setRankedRecommendations] = useState([]);
+  const [recommendedPosts, setRecommendedPosts] = useState([]);
+  ///////
 
   useEffect(() => {
     // Function to get user interactions from local storage
@@ -90,8 +95,6 @@ function Main() {
             );
             const data = await response.json();
 
-            const processedSummary = preprocessText(data.summary);
-
             return {
               ...post,
               location: data.location,
@@ -125,13 +128,18 @@ function Main() {
       fetchPostsInfo(jobData);
 
       if (preferredPostsCount >= 3) {
-        const rankedJobPosts = await getRankedJobPosts();
-        setPosts(rankedJobPosts);
+        const rankedJobPosts = await buildRankingModel(
+          jobData,
+          userInteractions.preferredPosts
+        );
+        setRankedRecommendations(rankedJobPosts);
+        setRecommendedPosts(rankedJobPosts.slice(0, 5));
       }
     };
 
     fetchPosts();
   }, [apiUrl, preferredPostsCount]);
+
 
 
   const handleCategoryClick = (category) => {
@@ -149,7 +157,7 @@ function Main() {
 
   };
 
-  // Function to handle clicking on "Start Application" button and mark post as preferred //////////////////////////
+  // Function to handle clicking on "Start Application" button and mark post as preferred //
   const handleStartApplication = (jobId) => {
     setSelectedPostId(jobId);
     setFlippedPostId(jobId);
@@ -227,8 +235,7 @@ function Main() {
       preferred: userPreferred,
     };
 
-    console.log("User Interactions Data:", userInteractionsData);
-    //temporarily visualizing the data
+    // console.log("User Interactions Data:", userInteractionsData);
 
     // Store user interactions in localStorage
     localStorage.setItem("userInteractionsData", JSON.stringify(userInteractionsData));
@@ -249,40 +256,6 @@ function Main() {
     handleUserInteractions();
   }, [userInteractions]);
 
-// Function to get the ranked job posts based on user preferences
-const getRankedJobPosts = async () => {
-  // Step 1: Preprocess user interactions and job posts data
-  const userInteractionsData = localStorage.getItem("userInteractionsData");
-  const userInteractions = userInteractionsData ? JSON.parse(userInteractionsData) : {};
-  const userLikes = userInteractions.likes || [];
-  const userDislikes = userInteractions.dislikes || [];
-  const userPreferred = userInteractions.preferred || [];
-
-  // Step 2: Get the TF-IDF vectors for job posts and user profile
-  const jobPosts = await fetchJobPosts();
-  const jobPostsData = jobPosts.map((post) => ({ ...post, title: post.title || "" }));
-  const jobPostsTFIDF = await calculateTFIDF(jobPostsData);
-  const userProfileTFIDF = await calculateTFIDF(userPreferred.map((postSlug) => {
-    const post = jobPosts.find((post) => post.slug === postSlug);
-    return post ? { ...post, title: post.title || "" } : { title: "" };
-  }));
-
-  // Step 3: Calculate cosine similarity between job posts and user profile
-  const rankedPosts = jobPostsData.map((post) => {
-    const postVector = jobPostsTFIDF[post.title];
-    const similarityScore = calculateCosineSimilarity(userProfileTFIDF, postVector);
-    return {
-      ...post,
-      similarityScore,
-    };
-  });
-
-  // Step 4: Sort the job posts based on similarity score (descending order)
-  rankedPosts.sort((a, b) => b.similarityScore - a.similarityScore);
-
-  return rankedPosts;
-};
-
 
   return (
     <div className="main">
@@ -295,12 +268,9 @@ const getRankedJobPosts = async () => {
       />
       <div className="content">
         <Sidebar 
-        handleCategoryClick={handleCategoryClick} 
-        preferredPost={getRankedJobPosts}
-        setPreferredPosts={setPreferredPosts}
-        setPreferredPostsCount={setPreferredPostsCount}
-        posts={posts.slice(0, 5)}
+        handleCategoryClick={handleCategoryClick}
         userInteractions={userInteractions}
+        rankedRecommendations={recommendedPosts}
         />
         <Routes>
           <Route

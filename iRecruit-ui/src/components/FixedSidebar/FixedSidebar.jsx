@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./FixedSidebar.css";
 
-const FixedSidebar = ({ posts, userInteractions }) => {
+const FixedSidebar = ({ userInteractions, rankedRecommendations }) => {
   // Random data for the bar chart for app status to test the UI
   const shortlistedCount = Math.floor(Math.random() * 15);
   const pendingCount = Math.floor(Math.random() * 20);
@@ -53,7 +53,7 @@ const FixedSidebar = ({ posts, userInteractions }) => {
             {userInteractions.preferredPosts.length >= 3 ? (
               <>
                 <strong>JOBS YOU MAY LIKE: </strong>
-                {posts.map((post, index) => (
+                {rankedRecommendations.map((post, index) => (
                   <li key={index}>
                     <strong>{post.title}</strong>
                     <p>{post.location}</p>
