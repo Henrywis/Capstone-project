@@ -13,7 +13,7 @@ import Applications from "../Applications/Applications";
 import {  Routes, Route } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { buildRankingModel } from "../data";
-import { cache } from "webpack";
+// import { cache } from "webpack";
 
 function Main() {
   //global variable that sets user to new user and re-renders components
