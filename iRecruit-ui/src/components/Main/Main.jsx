@@ -53,11 +53,13 @@ function Main() {
   ///////
 
   useEffect(() => {
+
+    let pageSize = 60;
     // Function to fetch data from cache or API
     const fetchData = async () => {
-      const apiUrl = 'http://localhost:3000/cache/posts';
+      const cacheUrl = 'http://localhost:3000/cache/posts';
       try {
-        const response = await fetch(apiUrl);
+        const response = await fetch(cacheUrl);
   
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -71,7 +73,7 @@ function Main() {
           setLoading(false);
         } else {
           // If there's no data in the cache, fetch from API and store in cache
-          const apiResponse = await fetch('https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=jobs&pageSize=60', {
+          const apiResponse = await fetch(`${apiUrl}&pageSize=${pageSize}`, {
             headers: {
               "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
               "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
@@ -82,7 +84,7 @@ function Main() {
           setLoading(false);
   
           // Store data in cache
-          await fetch(apiUrl, {
+          await fetch(cacheUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -128,7 +130,7 @@ function Main() {
     };
   
     fetchData();
-  }, []);
+  }, [apiUrl]);
 
 
 
