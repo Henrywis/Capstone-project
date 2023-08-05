@@ -83,6 +83,7 @@ app.route('/cache/posts')
 
       // Store data in cache
       set('posts', data);
+      console.log('Data cached successfully:', data);
 
       // Respond with a success message
       res.status(200).json({ message: 'Data stored in cache successfully.' });

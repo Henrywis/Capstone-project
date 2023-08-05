@@ -89,6 +89,37 @@ function Main() {
             },
             body: JSON.stringify(responseData.data),
           });
+  
+          const postsWithInfo = await Promise.all(
+            responseData.data.map(async (post) => {
+              try {
+                const response = await fetch(
+                  `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
+                  {
+                    method: "GET",
+                    headers: {
+                      "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+                      "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+                    },
+                  }
+                );
+                const data = await response.json();
+  
+                return {
+                  ...post,
+                  location: data.location,
+                  summary: data.summary,
+                };
+              } catch (error) {
+                console.error("Error fetching post data:", error);
+                return post;
+              }
+            })
+          );
+  
+          // Set the posts state with the additional information (location and summary)
+          setPosts(postsWithInfo);
+          setLoading(false);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -98,7 +129,6 @@ function Main() {
   
     fetchData();
   }, []);
-  
 
 
 
