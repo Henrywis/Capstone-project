@@ -11,6 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "axios": "^1.4.0",
     "lodash": "^4.17.21",
     "natural": "^6.5.0",
     "react": "^18.2.0",

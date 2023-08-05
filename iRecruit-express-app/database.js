@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
-import memcache from './memcache';
-import { User } from './models';
+import { get, set, del } from './memcache.js';
+import { User } from './models/user.js';
 
 export const sequelize = new Sequelize('capstone', 'henrywis', '@Henrywis1', {
   host: 'localhost',

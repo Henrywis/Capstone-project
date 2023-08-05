@@ -10,12 +10,14 @@ import SequelizeStoreInit from 'connect-session-sequelize';
 import fetch from 'node-fetch';
 import { seedDatabase } from './seed.js';
 import uploadRoute from "./routes/upload.js";
+import cacheRouter from './routes/cache.js';
+import { get, set, del } from  './memcache.js'
 
 const app = express();
 
 app.use(cors({
   origin: 'http://localhost:5173',
-  //react app address
+  //react app addresss
 
   credentials: true
 }));
@@ -49,22 +51,43 @@ app.use(
 sessionStore.sync();
 //to save session particular to a user
 app.use(userRoutes);
+app.use('/cache', cacheRouter);
+//mounts the cache route
 
 app.use("/api/upload", uploadRoute);
 
 
-// Route to get all posts, with associated users
-app.get('/posts', async (req, res) => {
-  try {
-    const posts = await Post.findAll({
-      include: [{ model: User, as: 'user' }],
-      order: [['createdAt', 'DESC']]
-    });
-    res.json(posts);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+////////////////////////////////
+
+// Route for caching job posts and fetching job posts with cache support
+
+app.route('/cache/posts')
+  .get((req, res) => {
+    // Check if data for all job posts is present in the cache
+    const cachedPosts = get('posts');
+    if (cachedPosts) {
+      console.log('Cache hit: Found posts data in cache');
+      return res.json(cachedPosts);
+    }
+
+    // If data not found in cache, respond with an empty array or appropriate response
+    console.log('Cache miss: Data not found in cache, fetching from API');
+    return res.json([]);
+  })
+  .post(async (req, res) => {
+    try {
+      const data = req.body;
+
+      // Store data in cache
+      set('posts', data);
+      console.log('Data cached successfully:', data);
+
+      // Respond with a success message
+      res.status(200).json({ message: 'Data stored in cache successfully.' });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
 
 
 // Route for the jobs

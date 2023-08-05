@@ -13,10 +13,12 @@ import Applications from "../Applications/Applications";
 import {  Routes, Route } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { buildRankingModel } from "../data";
-// import { cache } from "webpack";
+
 
 function Main() {
   //global variable that sets user to new user and re-renders components
+  const THIRTY_SECONDS = 30 * 1000;
+  //30 seconds in millisec for cache
   const { user, updateUser } = useContext(UserContext); 
   const [posts, setPosts] = useState([]);
 
@@ -52,93 +54,134 @@ function Main() {
   ///////
 
   useEffect(() => {
-    // Function to get user interactions from local storage
-    const fetchUserInteractions = () => {
-      const storedUserInteractionsData = JSON.parse(localStorage.getItem("userInteractionsData"));
-      const likedPostSlugs = storedUserInteractionsData?.likes || [];
-      const dislikedPostSlugs = storedUserInteractionsData?.dislikes || [];
-      const preferredPostSlugs = storedUserInteractionsData?.preferred || [];
-  
-      const likedPosts = posts.filter((post) => likedPostSlugs.includes(post.slug));
-      const dislikedPosts = posts.filter((post) => dislikedPostSlugs.includes(post.slug));
-      const preferredPosts = posts.filter((post) => preferredPostSlugs.includes(post.slug));
-  
-      setUserInteractions({
-        likedPosts,
-        dislikedPosts,
-        preferredPosts,
-      });
-    };
-  
-    fetchUserInteractions();
-  }, [posts]);
-  
 
-  // Function to fetch additional information (location and summary) for each job
-  useEffect(() => {
     let pageSize = 60;
-
-    const fetchPostsInfo = async (jobData) => {
-      setLoading(true);
-      const postsWithInfo = await Promise.all(
-        jobData.map(async (post) => {
-          try {
-            const response = await fetch(
-              `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
-              {
-                method: "GET",
-                headers: {
-                  "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
-                  "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
-                },
-              }
-            );
-            const data = await response.json();
-
-            return {
-              ...post,
-              location: data.location,
-              summary: data.summary,
-            };
-          } catch (error) {
-            console.error("Error fetching post data:", error);
-            return post;
-          }
-        })
-      );
-
-      setPosts(postsWithInfo);
-      setLoading(false);
-    };
-
-    const fetchPosts = async () => {
-      const response = await fetch(
-        `${apiUrl}&pageSize=${pageSize}`,
-        {
-          method: "GET",
-          headers: {
-            "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
-            "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
-          },
+    // Function to fetch data from cache or API
+    const fetchData = async () => {
+      const cacheUrl = 'http://localhost:3000/cache/posts';
+      try {
+        const response = await fetch(cacheUrl);
+  
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      );
-      const data = await response.json();
+  
+        const dataObject = await response.json();
 
-      const jobData = data.data;
-      fetchPostsInfo(jobData);
+        //cache eviction
+        if (Array.isArray(dataObject.value)) { // Check if data is an array
+          const currentTime = new Date().getTime();
+          const cachedData = dataObject.value.filter((entry) => entry.expiresAt > currentTime);
+  
+          // If data is found in the cache, use it
+          if (cachedData.length > 0) {
+            setPosts(cachedData.map((entry) => entry.data));
+            //extracts array of data values for each cached object
+            setLoading(false);
+          } else {
+            // If there's no data in the cache, fetch from API and store in cache
+            setLoading(true);
+            const apiResponse = await fetch(`${apiUrl}&pageSize=${pageSize}`, {
+              headers: {
+                "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+                "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+              },
+            });
+            const responseData = await apiResponse.json();
+            const jobData = responseData.data;
+            setPosts(jobData);
+            // setLoading(false);
 
-      if (preferredPostsCount >= 3) {
-        const rankedJobPosts = await buildRankingModel(
-          jobData,
-          userInteractions.preferredPosts
-        );
-        setRankedRecommendations(rankedJobPosts);
-        setRecommendedPosts(rankedJobPosts.slice(0, 5));
+            // Store data in cache
+            await fetch(cacheUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(jobData),
+            });
+
+            const postsWithInfo = await Promise.all(
+              jobData.map(async (post) => {
+                try {
+                  // setLoading(true);
+                  const response = await fetch(
+                    `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
+                    {
+                      method: "GET",
+                      headers: {
+                        "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+                        "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+                      },
+                    }
+                  );
+                  const data = await response.json();
+
+                  return {
+                    ...post,
+                    location: data.location,
+                    summary: data.summary,
+                  };
+
+
+                } catch (error) {
+                  console.error("Error fetching post data:", error);
+                  return post;
+                }
+              })
+            );
+
+            // Set the posts state with the additional information (location and summary)
+            setPosts(postsWithInfo);
+            setLoading(false);
+          }
+        } else{
+          console.error('Data is not in the expected format:', data);
+        }
+        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // setLoading(false);
       }
     };
+  
+    fetchData();
+    
+    //this cleans up function to evict stale data from cache after 30 seconds(to test)
+    const cacheCleanupInterval = setInterval(() => {
+      const currentTime = new Date().getTime();
+      const validData = posts.filter((entry) => entry.expiresAt > currentTime);
+      if (validData.length !== posts.length) {
+        // Some data has expired, evict stale data
+        console.log('Evicted data:', posts.filter((entry) => entry.expiresAt <= currentTime));
+        //well this log won't really show the evicted data because it is no
+        //longer in the post state
+        setPosts(validData);
+      }
+    }, THIRTY_SECONDS);
+  
+    // Clear the interval when the component unmounts to avoid memory leaks
+    return () => clearInterval(cacheCleanupInterval);
 
-    fetchPosts();
   }, [apiUrl, preferredPostsCount]);
+
+
+  useEffect(() => {
+    // effect for updating recommendations whenever the preferredPosts count changes
+    const buildRankedRecommendations = async () => {
+      if (preferredPostsCount >= 3) {
+        const rankedJobPosts = await buildRankingModel(posts, userInteractions.preferredPosts);
+        setRankedRecommendations(rankedJobPosts);
+        setRecommendedPosts(rankedJobPosts.slice(0, 5));
+        console.log(rankedJobPosts);
+      } else {
+        setRankedRecommendations([]);
+        setRecommendedPosts([]);
+      }
+    };
+    buildRankedRecommendations();
+  }, [preferredPostsCount, posts, userInteractions.preferredPosts]);
+  
 
 
 
