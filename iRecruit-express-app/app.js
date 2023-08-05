@@ -10,12 +10,17 @@ import SequelizeStoreInit from 'connect-session-sequelize';
 import fetch from 'node-fetch';
 import { seedDatabase } from './seed.js';
 import uploadRoute from "./routes/upload.js";
+import cacheRouter from './routes/cache.js'; 
+// import memcache from "./memcache.js";
+import { get, set, del } from  './memcache.js'
 
 const app = express();
+// const { get, set, del } = require('./memcache.js');
+
 
 app.use(cors({
   origin: 'http://localhost:5173',
-  //react app address
+  //react app addresss
 
   credentials: true
 }));
@@ -49,22 +54,137 @@ app.use(
 sessionStore.sync();
 //to save session particular to a user
 app.use(userRoutes);
+app.use('/cache', cacheRouter);
+//mounts the cache route
 
 app.use("/api/upload", uploadRoute);
 
 
+////////////////////////////////
+
+// Route for caching job posts and fetching job posts with cache support
+
+app.route('/cache/posts')
+  .get((req, res) => {
+    // Check if data for all job posts is present in the cache
+    const cachedPosts = get('posts');
+    if (cachedPosts) {
+      console.log('Cache hit: Found posts data in cache');
+      return res.json(cachedPosts);
+    }
+
+    // If data not found in cache, respond with an empty array or appropriate response
+    console.log('Cache miss: Data not found in cache, fetching from API');
+    return res.json([]);
+  })
+  .post(async (req, res) => {
+    try {
+      const data = req.body;
+
+      // Store data in cache
+      set('posts', data);
+
+      // Respond with a success message
+      res.status(200).json({ message: 'Data stored in cache successfully.' });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+
+
+
+// app.route('/cache/posts')
+//   .get(async (req, res) => {
+//     try {
+//       // Check if data for all job posts is present in the cache
+//       const cachedPosts = memcache.get('posts');
+//       if (cachedPosts) {
+//         console.log('Cache hit: Found posts data in cache');
+//         return res.json(cachedPosts);
+//       }
+
+//       // If data not found in cache, fetch data from the external API
+//       const apiUrl = "https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=jobs";
+//       const pageSize = 60;
+
+//       const response = await fetch(
+//         `${apiUrl}&pageSize=${pageSize}`,
+//         {
+//           method: "GET",
+//           headers: {
+//             "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+//             "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+//           },
+//         }
+//       );
+//       const data = await response.json();
+
+//       const jobData = data.data;
+//       const postsWithInfo = await Promise.all(
+//         jobData.map(async (post) => {
+//           try {
+//             const response = await fetch(
+//               `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
+//               {
+//                 method: "GET",
+//                 headers: {
+//                   "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+//                   "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+//                 },
+//               }
+//             );
+//             const data = await response.json();
+
+//             return {
+//               ...post,
+//               location: data.location,
+//               summary: data.summary,
+//             };
+//           } catch (error) {
+//             console.error("Error fetching post data:", error);
+//             return post;
+//           }
+//         })
+//       );
+
+//       // Store fetched data in the cache
+//       memcache.set('posts', postsWithInfo);
+
+//       res.json(postsWithInfo);
+//     } catch (err) {
+//       res.status(500).json({ message: err.message });
+//     }
+//   })
+//   .post(async (req, res) => {
+//     try {
+//       const data = req.body;
+
+//       // Store data in cache
+//       memcache.set('posts', data);
+
+//       // Respond with a success message
+//       res.status(200).json({ message: 'Data stored in cache successfully.' });
+//     } catch (err) {
+//       res.status(500).json({ message: err.message });
+//     }
+//   });
+
+
+////////////////////////////////
+
 // Route to get all posts, with associated users
-app.get('/posts', async (req, res) => {
-  try {
-    const posts = await Post.findAll({
-      include: [{ model: User, as: 'user' }],
-      order: [['createdAt', 'DESC']]
-    });
-    res.json(posts);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// app.get('/posts', async (req, res) => {
+//   try {
+//     const posts = await Post.findAll({
+//       include: [{ model: User, as: 'user' }],
+//       order: [['createdAt', 'DESC']]
+//     });
+//     res.json(posts);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
 
 
 // Route for the jobs

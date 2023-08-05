@@ -14,6 +14,7 @@ import {  Routes, Route } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { buildRankingModel } from "../data";
 // import { cache } from "webpack";
+import axios from 'axios';
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -52,93 +53,52 @@ function Main() {
   ///////
 
   useEffect(() => {
-    // Function to get user interactions from local storage
-    const fetchUserInteractions = () => {
-      const storedUserInteractionsData = JSON.parse(localStorage.getItem("userInteractionsData"));
-      const likedPostSlugs = storedUserInteractionsData?.likes || [];
-      const dislikedPostSlugs = storedUserInteractionsData?.dislikes || [];
-      const preferredPostSlugs = storedUserInteractionsData?.preferred || [];
+    // Function to fetch data from cache or API
+    const fetchData = async () => {
+      const apiUrl = 'http://localhost:3000/cache/posts';
+      try {
+        const response = await fetch(apiUrl);
   
-      const likedPosts = posts.filter((post) => likedPostSlugs.includes(post.slug));
-      const dislikedPosts = posts.filter((post) => dislikedPostSlugs.includes(post.slug));
-      const preferredPosts = posts.filter((post) => preferredPostSlugs.includes(post.slug));
-  
-      setUserInteractions({
-        likedPosts,
-        dislikedPosts,
-        preferredPosts,
-      });
-    };
-  
-    fetchUserInteractions();
-  }, [posts]);
-  
-
-  // Function to fetch additional information (location and summary) for each job
-  useEffect(() => {
-    let pageSize = 60;
-
-    const fetchPostsInfo = async (jobData) => {
-      setLoading(true);
-      const postsWithInfo = await Promise.all(
-        jobData.map(async (post) => {
-          try {
-            const response = await fetch(
-              `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
-              {
-                method: "GET",
-                headers: {
-                  "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
-                  "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
-                },
-              }
-            );
-            const data = await response.json();
-
-            return {
-              ...post,
-              location: data.location,
-              summary: data.summary,
-            };
-          } catch (error) {
-            console.error("Error fetching post data:", error);
-            return post;
-          }
-        })
-      );
-
-      setPosts(postsWithInfo);
-      setLoading(false);
-    };
-
-    const fetchPosts = async () => {
-      const response = await fetch(
-        `${apiUrl}&pageSize=${pageSize}`,
-        {
-          method: "GET",
-          headers: {
-            "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
-            "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
-          },
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      );
-      const data = await response.json();
-
-      const jobData = data.data;
-      fetchPostsInfo(jobData);
-
-      if (preferredPostsCount >= 3) {
-        const rankedJobPosts = await buildRankingModel(
-          jobData,
-          userInteractions.preferredPosts
-        );
-        setRankedRecommendations(rankedJobPosts);
-        setRecommendedPosts(rankedJobPosts.slice(0, 5));
+  
+        const data = await response.json();
+  
+        // If data is found in the cache, use it
+        if (data.length > 0) {
+          setPosts(data);
+          setLoading(false);
+        } else {
+          // If there's no data in the cache, fetch from API and store in cache
+          const apiResponse = await fetch('https://jobsearch4.p.rapidapi.com/api/v1/Jobs/Search?SearchQuery=jobs&pageSize=60', {
+            headers: {
+              "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+              "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+            },
+          });
+          const responseData = await apiResponse.json();
+          setPosts(responseData.data);
+          setLoading(false);
+  
+          // Store data in cache
+          await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(responseData.data),
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
       }
     };
-
-    fetchPosts();
-  }, [apiUrl, preferredPostsCount]);
+  
+    fetchData();
+  }, []);
+  
 
 
 
