@@ -13,8 +13,7 @@ import Applications from "../Applications/Applications";
 import {  Routes, Route } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { buildRankingModel } from "../data";
-// import { cache } from "webpack";
-import axios from 'axios';
+
 
 function Main() {
   //global variable that sets user to new user and re-renders components
@@ -81,8 +80,9 @@ function Main() {
             },
           });
           const responseData = await apiResponse.json();
-          setPosts(responseData.data);
-          setLoading(false);
+          const jobData = responseData.data;
+          setPosts(jobData);
+          // setLoading(false);
   
           // Store data in cache
           await fetch(cacheUrl, {
@@ -90,12 +90,13 @@ function Main() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(responseData.data),
+            body: JSON.stringify(jobData),
           });
   
           const postsWithInfo = await Promise.all(
-            responseData.data.map(async (post) => {
+            jobData.map(async (post) => {
               try {
+                // setLoading(true);
                 const response = await fetch(
                   `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
                   {
@@ -113,6 +114,8 @@ function Main() {
                   location: data.location,
                   summary: data.summary,
                 };
+
+
               } catch (error) {
                 console.error("Error fetching post data:", error);
                 return post;
@@ -123,15 +126,43 @@ function Main() {
           // Set the posts state with the additional information (location and summary)
           setPosts(postsWithInfo);
           setLoading(false);
+          // if (preferredPostsCount >= 3) {
+          //   const rankedJobPosts = await buildRankingModel(
+          //     jobData,
+          //     userInteractions.preferredPosts
+          //   );
+          //   setRankedRecommendations(rankedJobPosts);
+          //   setRecommendedPosts(rankedJobPosts.slice(0, 5));
+          //   console.log(recommendedPosts);
+          // }
+          
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        setLoading(false);
+        // setLoading(false);
       }
     };
   
     fetchData();
-  }, [apiUrl]);
+  }, [apiUrl, preferredPostsCount]);
+
+
+  useEffect(() => {
+    // effect for updating recommendations whenever the preferredPosts count changes
+    const buildRankedRecommendations = async () => {
+      if (preferredPostsCount >= 3) {
+        const rankedJobPosts = await buildRankingModel(posts, userInteractions.preferredPosts);
+        setRankedRecommendations(rankedJobPosts);
+        setRecommendedPosts(rankedJobPosts.slice(0, 5));
+        console.log(rankedJobPosts);
+      } else {
+        setRankedRecommendations([]);
+        setRecommendedPosts([]);
+      }
+    };
+    buildRankedRecommendations();
+  }, [preferredPostsCount, posts, userInteractions.preferredPosts]);
+  
 
 
 
