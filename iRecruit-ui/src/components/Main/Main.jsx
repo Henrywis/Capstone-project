@@ -73,6 +73,7 @@ function Main() {
           setLoading(false);
         } else {
           // If there's no data in the cache, fetch from API and store in cache
+          setLoading(true);
           const apiResponse = await fetch(`${apiUrl}&pageSize=${pageSize}`, {
             headers: {
               "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
