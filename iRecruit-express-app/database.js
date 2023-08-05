@@ -1,9 +1,6 @@
 import { Sequelize } from 'sequelize';
-// import memcache from './memcache.js';
 import { get, set, del } from './memcache.js';
 import { User } from './models/user.js';
-
-// const { get, set, del } = require('./memcache.js');
 
 export const sequelize = new Sequelize('capstone', 'henrywis', '@Henrywis1', {
   host: 'localhost',

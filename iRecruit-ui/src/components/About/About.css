@@ -1,4 +1,4 @@
-.about {
+/* .about {
     padding: 20px;
   }
   
@@ -10,4 +10,46 @@
   .about p {
     line-height: 1.5;
   }
+   */
+
+
+   .about-container {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin-top: 50px;
+    margin-right: 20px;
+    width: 550px;
+    margin-left: 10px;
+    position: relative;
+  }
   
+  .about-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .carousel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 200px;
+    position: relative;
+  }
+  
+  .carousel p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    transition: transform 1s;
+    position: absolute;
+    width: 100%;
+  }
+  
+  .carousel p.active {
+    transform: translateX(0);
+  }
+  
+  .carousel p:not(.active) {
+    transform: translateX(100%);
+  }

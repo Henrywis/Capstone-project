@@ -1,9 +1,7 @@
 import express from 'express';
-// import memcache from '../memcache.js';
 import {get, set, del} from '../memcache.js'
 
 const router = express.Router();
-// const { get, set, del } = require('../memcache.js');
 
 
 // GET route to fetch data from cache based on the provided key

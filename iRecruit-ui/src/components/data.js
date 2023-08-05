@@ -257,3 +257,40 @@ const calculateCosineSimilarity = (vector1, vector2) => {
   };
   
 export { processUserInteractions, preprocessText, calculateTFIDF, buildRankingModel, calculateCosineSimilarity };
+
+
+
+///////////////////////////////////////////////////////////////////////
+
+
+// After checking the console logs for the vectors originally, I had errors logged on my console
+// indicating that I did not have a proper vectors to iterate through to get scores. So for proper debugging, I had more console logs 
+// and to get a proper visualization, I wrote test cases using Jest to test the manual functions I had created in place of importing
+// libraries. The test cases for ranking were not 100% correct, but above average. I mean  the values from the calculateTF-IDF function, which
+// in turn affects the cosine similarity and score and the ranking model itself, had slight errors, because of the nature of bad/unsanitized data in the API. 
+// I figured the API had bad data when some parts of the data were undefined (I tried to take care of that, although I couldnt have accessed the 
+// whole information from the API to actually know what is and isn't undefined. So I put a constraint to skip undefined titles (summaries initially)
+// Still, some data had the fields "title" and "summary" etc but had empty values after I put a checker to see if post.title even exists for all posts. Some data 
+// also had missing slugs, which I had used in my case as each job id because they were unique to each job, and some slugs had no data when extra info needed to 
+// be fetched with them.
+
+// After that, the next problem was from the tokenization and creating equal vectors. Some vector lengths were unequal and I had to continue ONLY with those 
+// that had equal vector lengths. At this point, all vector 1s had the Tf-iDF scores but not vector 2
+
+// I did some rounds of debugging by checking why the console says that there are errors in vectors used for calculation.
+// Started first by making sure it is an object
+// Then I logged the vectors to see what they looked like and voila! vector 2 was always undefined, hence the recommendation using the user's preferred posts was 
+// never going on which is why it kept returning only the tfidf scored posts originally displayed, and in the recommendation section, returns the 
+// top 5 posts from the Home display regardless of the user interaction. Did some more rounds of debugging like see the contents of each vector and i saw that
+// the tfidf of some items were zero from the job posts, and with that I had to eliminate the zeros for calculation since dividing by zero gives NaN (if document frequency is
+// zero, Math.log(totalDocuments / documentFrequency[token]) will cease to return a number)
+
+// Knowing that vector1 is the tf-idf of the jobs and vector 2 is the tf-idf of the user interactions as regards the jobposts, while checking the cosine similarity, I had to skip
+// values that returned NaN as I needed actual numbers in the vectors for calculating the similarity
+// So if there was any zeros in vector 1 or undefined or null (after ensuring the structures and key assignments are the same), it would cause vector 2 to be NaN, hence I skipped
+// that document and only return documents with valid vectors, ranked in descending order
+// and since not so many data had valid vectors from the section of data I am using, a few NaN vectored data returned in the recommendation
+// but because I had exhausted the number of valid data I wanted to display so to fill up the space, posts with high tf-idf make it to the list AFTER the actual ranked ones.
+
+
+///////////////////////////////////////////////////////////////////////

@@ -20,7 +20,7 @@ Overview
 Category: [Recruiting]
 
 Story: 
-[A recruiting website strictly for students who fulful diversity requirements, where users, in this case, students (and recruiters) have profiles, and students (users) get connected to the latest internship opportunities, based on their categories of interest. Every candidate application is done in the Application room of that job and candidates can get more listings based on the most clicked title feature. Candidates "may" be able to track the progress of each application to see which is Accepted, Rejected or Pending.]
+[A recruiting website strictly for students who fulfill diversity requirements, where users, in this case, students (and recruiters) have profiles, and students (users) get connected to the latest internship opportunities, based on their categories of interest. Every candidate application is done in the Application room of that job and candidates can get more listings based on the most clicked title feature. Candidates "may" be able to track the progress of each application to see which is Accepted, Rejected or Pending.]
 Market: [ college students]
 Habit: [Internship Recruiting Seasons]
 Scope: [Internship listings]
@@ -190,9 +190,10 @@ Project Week 5 (Internship week 8): 07/31 - 08/04
 [x] Implement caching
 
 Project Week 6 (Internship week 9): 08/07 - 08/11
-[] Implement caching
-[] User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected. (Optional)
-[] Fix bugs/ Do demo
+[x] Implement caching
+[] User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected. (Optional) (Only UI done)
+[x] Fix bugs
+[]/ Do demo
 
 Project Week 7 (Internship week 10): 08/14 - 08/18
 [] Codebase week
