@@ -54,32 +54,28 @@ function Main() {
   ///////
 
   useEffect(() => {
-
     let pageSize = 60;
+  
     // Function to fetch data from cache or API
     const fetchData = async () => {
-      const cacheUrl = 'http://localhost:3000/cache/posts';
+      const cacheUrl = "http://localhost:3000/cache/posts";
       try {
         const response = await fetch(cacheUrl);
   
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
   
-        const dataObject = await response.json();
-
-        //cache eviction
-        if (Array.isArray(dataObject.value)) { // Check if data is an array
-          const currentTime = new Date().getTime();
-          const cachedData = dataObject.value.filter((entry) => entry.expiresAt > currentTime);
+        const cacheData = await response.json();
+        const currentTime = new Date().getTime();
   
-          // If data is found in the cache, use it
-          if (cachedData.length > 0) {
-            setPosts(cachedData.map((entry) => entry.data));
-            //extracts array of data values for each cached object
+        let postsWithId = [];
+        if (Array.isArray(cacheData) && cacheData.length > 0) {
+          const cachedEntry = cacheData[0];
+          if (cachedEntry.expiresAt > currentTime) {
+            setPosts(cachedEntry.data.slice(0, pageSize));
             setLoading(false);
           } else {
-            // If there's no data in the cache, fetch from API and store in cache
             setLoading(true);
             const apiResponse = await fetch(`${apiUrl}&pageSize=${pageSize}`, {
               headers: {
@@ -89,82 +85,115 @@ function Main() {
             });
             const responseData = await apiResponse.json();
             const jobData = responseData.data;
-            setPosts(jobData);
-            // setLoading(false);
-
-            // Store data in cache
-            await fetch(cacheUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(jobData),
-            });
-
-            const postsWithInfo = await Promise.all(
-              jobData.map(async (post) => {
-                try {
-                  // setLoading(true);
-                  const response = await fetch(
-                    `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
-                    {
-                      method: "GET",
-                      headers: {
-                        "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
-                        "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
-                      },
-                    }
-                  );
-                  const data = await response.json();
-
-                  return {
-                    ...post,
-                    location: data.location,
-                    summary: data.summary,
-                  };
-
-
-                } catch (error) {
-                  console.error("Error fetching post data:", error);
-                  return post;
-                }
-              })
-            );
-
-            // Set the posts state with the additional information (location and summary)
-            setPosts(postsWithInfo);
+            postsWithId = jobData.map((post) => ({ ...post, id: uuidv4() }));
+            //giving each post a unique id using id generator which is more convenient than post.slug 
+            setPosts(postsWithId.slice(0, pageSize));
             setLoading(false);
+  
+            if (postsWithId.length >= 3) {
+              const rankedJobPosts = await buildRankingModel(postsWithId, []);
+              setRecommendedPosts(rankedJobPosts.slice(0, 5));
+            }
           }
-        } else{
-          console.error('Data is not in the expected format:', data);
+        } else {
+          // If the cache is empty or not in the expected format, fetch from API directly
+          setLoading(true);
+          const apiResponse = await fetch(`${apiUrl}&pageSize=${pageSize}`, {
+            headers: {
+              "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+              "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+            },
+          });
+          const responseData = await apiResponse.json();
+          const jobData = responseData.data;
+          postsWithId = jobData.map((post) => ({ ...post, id: uuidv4() }));
+          setPosts(postsWithId.slice(0, pageSize));
+          setLoading(false);
+  
+          if (postsWithId.length >= 3) {
+            const rankedJobPosts = await buildRankingModel(postsWithId, []);
+            setRecommendedPosts(rankedJobPosts.slice(0, 5));
+          }
         }
-        
+  
+        // Fetch additional info for each post separately, mapping them into the posts
+        //note: some posts have undefined slugs and some have undefined slug info
+        //for instance some posts have no location, and/or summary
+        const additionalInfoPromises = postsWithId.map(async (post) => {
+          try {
+            const response = await fetch(
+              `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
+              {
+                method: "GET",
+                headers: {
+                  "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+                  "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+                },
+              }
+            );
+            const data = await response.json();
+            return {
+              ...post,
+              location: data.location,
+              summary: data.summary,
+            };
+          } catch (error) {
+            console.error("Error fetching post data:", error);
+            return post;
+          }
+        });
+  
+        const postsWithInfo = await Promise.all(additionalInfoPromises);
+  
+        // Cache data in chunks with expiration time
+        // Here I am paginating the cache with 10 posts per
+        // cache to avoid payload, they all have the same expiry
+        const expirationTime = new Date().getTime() + THIRTY_SECONDS;
+        const chunkSize = 10; // number of posts per cache page
+        for (let i = 0; i < postsWithInfo.length; i += chunkSize) {
+          const chunk = postsWithInfo.slice(i, i + chunkSize);
+          const dataWithInfoToCache = [
+            {
+              data: chunk,
+              expiresAt: expirationTime,
+            },
+          ];
+          await fetch(cacheUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataWithInfoToCache),
+          });
+        }
+  
+        // Update state with posts containing additional information
+        setPosts(postsWithInfo.slice(0, pageSize));
       } catch (error) {
-        console.error('Error fetching data:', error);
-        // setLoading(false);
+        console.error("Error fetching data:", error);
       }
     };
   
     fetchData();
-    
-    //this cleans up function to evict stale data from cache after 30 seconds(to test)
+  
+    // Cache cleanup to evict stale data after 30 seconds (for testing)
     const cacheCleanupInterval = setInterval(() => {
       const currentTime = new Date().getTime();
       const validData = posts.filter((entry) => entry.expiresAt > currentTime);
       if (validData.length !== posts.length) {
         // Some data has expired, evict stale data
-        console.log('Evicted data:', posts.filter((entry) => entry.expiresAt <= currentTime));
-        //well this log won't really show the evicted data because it is no
-        //longer in the post state
+        console.log(
+          "Evicted data:",
+          posts.filter((entry) => entry.expiresAt <= currentTime)
+        );
         setPosts(validData);
       }
     }, THIRTY_SECONDS);
   
     // Clear the interval when the component unmounts to avoid memory leaks
     return () => clearInterval(cacheCleanupInterval);
-
-  }, [apiUrl, preferredPostsCount]);
-
+  }, [apiUrl]);
+ 
 
   useEffect(() => {
     // effect for updating recommendations whenever the preferredPosts count changes
@@ -182,8 +211,6 @@ function Main() {
     buildRankedRecommendations();
   }, [preferredPostsCount, posts, userInteractions.preferredPosts]);
   
-
-
 
   const handleCategoryClick = (category) => {
     setCategoryFilter(category);

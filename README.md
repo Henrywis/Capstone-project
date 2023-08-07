@@ -192,6 +192,7 @@ Project Week 5 (Internship week 8): 07/31 - 08/04
 Project Week 6 (Internship week 9): 08/07 - 08/11
 [x] Implement caching
 [] User can track progress of application, including seeing if application was Shortlisted, Pending or Rejected. (Optional) (Only UI done)
+[x] Design extra ui for about and contact pages.
 [x] Fix bugs
 []/ Do demo
 

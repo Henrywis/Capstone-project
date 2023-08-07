@@ -77,10 +77,15 @@ app.route('/cache/posts')
   .post(async (req, res) => {
     try {
       const data = req.body;
+      const THIRTY_SECONDS = 30 * 1000;
+      //30 seconds in millisec for cache
+
+      const expirationTime = new Date().getTime() + THIRTY_SECONDS;
+      //using TTL to cache evacuation
 
       // Store data in cache
-      set('posts', data);
-      console.log('Data cached successfully:', data);
+      set('posts', data, expirationTime);
+      console.log('Data cached successfully:', data, expirationTime);
 
       // Respond with a success message
       res.status(200).json({ message: 'Data stored in cache successfully.' });
