@@ -53,146 +53,65 @@ function Main() {
   const [recommendedPosts, setRecommendedPosts] = useState([]);
   ///////
 
-  // useEffect(() => {
-
-  //   let pageSize = 60;
-  //   // Function to fetch data from cache or API
-  //   const fetchData = async () => {
-  //     const cacheUrl = 'http://localhost:3000/cache/posts';
-  //     try {
-  //       const response = await fetch(cacheUrl);
-  
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  
-  //       const dataObject = await response.json();
-  //       ////////////////////////////////////////
-  //       console.log('Data from cache:', dataObject); 
-  //       ///////////////////////////////////////////
-
-  //       //cache eviction
-  //       if (Array.isArray(dataObject.value) && dataObject.value.length > 0) { // Check if data is an array
-  //         const currentTime = new Date().getTime();
-  //         const cachedData = dataObject.value.filter((entry) => entry.expiresAt > currentTime);
-  
-  //         // If data is found in the cache, use it
-  //         if (cachedData.length > 0) {
-  //           setPosts(cachedData.map((entry) => entry.data));
-  //           //extracts array of data values for each cached object
-  //           setLoading(false);
-  //         } else {
-  //           // If there's no data in the cache, fetch from API and store in cache
-  //           setLoading(true);
-  //           const apiResponse = await fetch(`${apiUrl}&pageSize=${pageSize}`, {
-  //             headers: {
-  //               "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
-  //               "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
-  //             },
-  //           });
-  //           const responseData = await apiResponse.json();
-  //           const jobData = responseData.data;
-  //           setPosts(jobData);
-  //           // setLoading(false);
-
-  //           // Store data in cache
-  //           await fetch(cacheUrl, {
-  //             method: 'POST',
-  //             headers: {
-  //               'Content-Type': 'application/json',
-  //             },
-  //             body: JSON.stringify(jobData),
-  //           });
-
-  //           const postsWithInfo = await Promise.all(
-  //             jobData.map(async (post) => {
-  //               try {
-  //                 // setLoading(true);
-  //                 const response = await fetch(
-  //                   `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
-  //                   {
-  //                     method: "GET",
-  //                     headers: {
-  //                       "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
-  //                       "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
-  //                     },
-  //                   }
-  //                 );
-  //                 const data = await response.json();
-
-  //                 return {
-  //                   ...post,
-  //                   location: data.location,
-  //                   summary: data.summary,
-  //                 };
-
-
-  //               } catch (error) {
-  //                 console.error("Error fetching post data:", error);
-  //                 return post;
-  //               }
-  //             })
-  //           );
-
-  //           // Set the posts state with the additional information (location and summary)
-  //           setPosts(postsWithInfo);
-  //           setLoading(false);
-  //         }
-  //       } else{
-  //         console.error('Data is not in the expected format:', dataObject);
-  //       }
-        
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //       // setLoading(false);
-  //     }
-  //   };
-  
-  //   fetchData();
-    
-  //   //this cleans up function to evict stale data from cache after 30 seconds(to test)
-  //   const cacheCleanupInterval = setInterval(() => {
-  //     const currentTime = new Date().getTime();
-  //     const validData = cachedData.filter((entry) => entry.expiresAt > currentTime);
-  //     if (validData.length !== cachedData.length) {
-  //       // Some data has expired, evict stale data
-  //       console.log('Evicted data:', cachedData.filter((entry) => entry.expiresAt <= currentTime));
-  //       setPosts(validData.map((entry) => entry.data));
-  //     }
-  //   }, THIRTY_SECONDS);
-  
-  //   // Clear the interval when the component unmounts to avoid memory leaks
-  //   return () => clearInterval(cacheCleanupInterval);
-
-  // }, [apiUrl, preferredPostsCount]);
-
-
 
   useEffect(() => {
     let pageSize = 60;
-
+  
     // Function to fetch data from cache or API
     const fetchData = async () => {
-      const cacheUrl = 'http://localhost:3000/cache/posts';
+      const cacheUrl = "http://localhost:3000/cache/posts";
       try {
         const response = await fetch(cacheUrl);
-
+  
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
-
+  
         const cacheData = await response.json();
-
-        // Cache eviction
         const currentTime = new Date().getTime();
-        const validData = cacheData.filter((entry) => entry.expiresAt > currentTime);
-
-        // If valid data is found in the cache, use it
-        if (validData.length > 0) {
-          setPosts(validData.map((entry) => entry.data));
-          setLoading(false);
+  
+        if (Array.isArray(cacheData) && cacheData.length > 0) {
+          const cachedEntry = cacheData[0];
+          if (cachedEntry.expiresAt > currentTime) {
+            setPosts(cachedEntry.data.slice(0, pageSize));
+            setLoading(false);
+          } else {
+            setLoading(true);
+            const apiResponse = await fetch(`${apiUrl}&pageSize=${pageSize}`, {
+              headers: {
+                "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+                "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+              },
+            });
+            const responseData = await apiResponse.json();
+            const jobData = responseData.data;
+            const postsWithId = jobData.map((post) => ({ ...post, id: uuidv4() }));
+            setPosts(postsWithId.slice(0, pageSize));
+            setLoading(false);
+  
+            // Store data in cache with expiration time
+            const expirationTime = new Date().getTime() + THIRTY_SECONDS;
+            const dataToCache = [
+              {
+                data: postsWithId,
+                expiresAt: expirationTime,
+              },
+            ];
+            await fetch(cacheUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(dataToCache),
+            });
+  
+            if (postsWithId.length >= 3) {
+              const rankedJobPosts = await buildRankingModel(postsWithId, []);
+              setRecommendedPosts(rankedJobPosts.slice(0, 5));
+            }
+          }
         } else {
-          // If there's no valid data in the cache, fetch from API and store in cache
+          // If the cache is empty or not in the expected format, fetch from API directly
           setLoading(true);
           const apiResponse = await fetch(`${apiUrl}&pageSize=${pageSize}`, {
             headers: {
@@ -202,90 +121,58 @@ function Main() {
           });
           const responseData = await apiResponse.json();
           const jobData = responseData.data;
-          setPosts(jobData);
+          const postsWithId = jobData.map((post) => ({ ...post, id: uuidv4() }));
+          setPosts(postsWithId.slice(0, pageSize));
           setLoading(false);
-
-          // Get additional info for jobData (location and summary)
-          const postsWithInfo = await Promise.all(
-            jobData.map(async (post) => {
-              try {
-                const response = await fetch(
-                  `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
-                  {
-                    method: "GET",
-                    headers: {
-                      "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
-                      "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
-                    },
-                  }
-                );
-                const data = await response.json();
-
-                return {
-                  ...post,
-                  location: data.location,
-                  summary: data.summary,
-                };
-              } catch (error) {
-                console.error("Error fetching post data:", error);
-                return post;
-              }
-            })
-          );
-
-          // Store data with additional info in cache
-          const cacheData = postsWithInfo.map((post) => ({
-            data: post,
-            expiresAt: new Date().getTime() + THIRTY_SECONDS,
-          }));
-          await fetch(cacheUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
+  
+          // Store data in cache with expiration time
+          const expirationTime = new Date().getTime() + THIRTY_SECONDS;
+          const dataToCache = [
+            {
+              data: postsWithId,
+              expiresAt: expirationTime,
             },
-            body: JSON.stringify(cacheData),
+          ];
+          await fetch(cacheUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataToCache),
           });
+  
+          if (postsWithId.length >= 3) {
+            const rankedJobPosts = await buildRankingModel(postsWithId, []);
+            setRecommendedPosts(rankedJobPosts.slice(0, 5));
+          }
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
-
+  
     fetchData();
-
-    // Cache cleanup function to evict stale data from cache after 30 seconds
-    const cacheCleanupInterval = setInterval(async () => {
-      try {
-        const cacheResponse = await fetch(cacheUrl);
-        if (!cacheResponse.ok) {
-          throw new Error('Network response for cache was not ok');
-        }
-        const cacheData = await cacheResponse.json();
-        const currentTime = new Date().getTime();
-        const validData = cacheData.filter((entry) => entry.expiresAt > currentTime);
-        if (validData.length !== cacheData.length) {
-          // Some data has expired, evict stale data
-          console.log('Evicted data:', cacheData.filter((entry) => entry.expiresAt <= currentTime));
-          // this log should show the evicted data
-          await fetch(cacheUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(validData),
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching cache data:', error);
+  
+    // Cache cleanup to evict stale data after 30 seconds (for testing)
+    const cacheCleanupInterval = setInterval(() => {
+      const currentTime = new Date().getTime();
+      const validData = posts.filter((entry) => entry.expiresAt > currentTime);
+      if (validData.length !== posts.length) {
+        // Some data has expired, evict stale data
+        console.log(
+          "Evicted data:",
+          posts.filter((entry) => entry.expiresAt <= currentTime)
+        );
+        setPosts(validData);
       }
     }, THIRTY_SECONDS);
-
+  
     // Clear the interval when the component unmounts to avoid memory leaks
     return () => clearInterval(cacheCleanupInterval);
+  }, [apiUrl]);
 
-  }, [apiUrl, preferredPostsCount]);
 
-
+  
   useEffect(() => {
     // effect for updating recommendations whenever the preferredPosts count changes
     const buildRankedRecommendations = async () => {
@@ -302,8 +189,6 @@ function Main() {
     buildRankedRecommendations();
   }, [preferredPostsCount, posts, userInteractions.preferredPosts]);
   
-
-
 
   const handleCategoryClick = (category) => {
     setCategoryFilter(category);
