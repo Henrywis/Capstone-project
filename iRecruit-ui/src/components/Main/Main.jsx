@@ -53,7 +53,6 @@ function Main() {
   const [recommendedPosts, setRecommendedPosts] = useState([]);
   ///////
 
-
   useEffect(() => {
     let pageSize = 60;
   
@@ -70,6 +69,7 @@ function Main() {
         const cacheData = await response.json();
         const currentTime = new Date().getTime();
   
+        let postsWithId = [];
         if (Array.isArray(cacheData) && cacheData.length > 0) {
           const cachedEntry = cacheData[0];
           if (cachedEntry.expiresAt > currentTime) {
@@ -85,25 +85,10 @@ function Main() {
             });
             const responseData = await apiResponse.json();
             const jobData = responseData.data;
-            const postsWithId = jobData.map((post) => ({ ...post, id: uuidv4() }));
+            postsWithId = jobData.map((post) => ({ ...post, id: uuidv4() }));
+            //giving each post a unique id using id generator which is more convenient than post.slug 
             setPosts(postsWithId.slice(0, pageSize));
             setLoading(false);
-  
-            // Store data in cache with expiration time
-            const expirationTime = new Date().getTime() + THIRTY_SECONDS;
-            const dataToCache = [
-              {
-                data: postsWithId,
-                expiresAt: expirationTime,
-              },
-            ];
-            await fetch(cacheUrl, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(dataToCache),
-            });
   
             if (postsWithId.length >= 3) {
               const rankedJobPosts = await buildRankingModel(postsWithId, []);
@@ -121,15 +106,55 @@ function Main() {
           });
           const responseData = await apiResponse.json();
           const jobData = responseData.data;
-          const postsWithId = jobData.map((post) => ({ ...post, id: uuidv4() }));
+          postsWithId = jobData.map((post) => ({ ...post, id: uuidv4() }));
           setPosts(postsWithId.slice(0, pageSize));
           setLoading(false);
   
-          // Store data in cache with expiration time
-          const expirationTime = new Date().getTime() + THIRTY_SECONDS;
-          const dataToCache = [
+          if (postsWithId.length >= 3) {
+            const rankedJobPosts = await buildRankingModel(postsWithId, []);
+            setRecommendedPosts(rankedJobPosts.slice(0, 5));
+          }
+        }
+  
+        // Fetch additional info for each post separately, mapping them into the posts
+        //note: some posts have undefined slugs and some have undefined slug info
+        //for instance some posts have no location, and/or summary
+        const additionalInfoPromises = postsWithId.map(async (post) => {
+          try {
+            const response = await fetch(
+              `https://jobsearch4.p.rapidapi.com/api/v1/Jobs/${post.slug}`,
+              {
+                method: "GET",
+                headers: {
+                  "X-RapidAPI-Key": "ec112ef3bcmshaa8e131d16aa03ep1e5eaejsnc56cb89a889f",
+                  "X-RapidAPI-Host": "jobsearch4.p.rapidapi.com",
+                },
+              }
+            );
+            const data = await response.json();
+            return {
+              ...post,
+              location: data.location,
+              summary: data.summary,
+            };
+          } catch (error) {
+            console.error("Error fetching post data:", error);
+            return post;
+          }
+        });
+  
+        const postsWithInfo = await Promise.all(additionalInfoPromises);
+  
+        // Cache data in chunks with expiration time
+        // Here I am paginating the cache with 10 posts per
+        // cache to avoid payload, they all have the same expiry
+        const expirationTime = new Date().getTime() + THIRTY_SECONDS;
+        const chunkSize = 10; // number of posts per cache page
+        for (let i = 0; i < postsWithInfo.length; i += chunkSize) {
+          const chunk = postsWithInfo.slice(i, i + chunkSize);
+          const dataWithInfoToCache = [
             {
-              data: postsWithId,
+              data: chunk,
               expiresAt: expirationTime,
             },
           ];
@@ -138,14 +163,12 @@ function Main() {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(dataToCache),
+            body: JSON.stringify(dataWithInfoToCache),
           });
-  
-          if (postsWithId.length >= 3) {
-            const rankedJobPosts = await buildRankingModel(postsWithId, []);
-            setRecommendedPosts(rankedJobPosts.slice(0, 5));
-          }
         }
+  
+        // Update state with posts containing additional information
+        setPosts(postsWithInfo.slice(0, pageSize));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -170,9 +193,8 @@ function Main() {
     // Clear the interval when the component unmounts to avoid memory leaks
     return () => clearInterval(cacheCleanupInterval);
   }, [apiUrl]);
+ 
 
-
-  
   useEffect(() => {
     // effect for updating recommendations whenever the preferredPosts count changes
     const buildRankedRecommendations = async () => {
