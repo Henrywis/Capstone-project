@@ -201,7 +201,12 @@ function Main() {
       if (preferredPostsCount >= 3) {
         const rankedJobPosts = await buildRankingModel(posts, userInteractions.preferredPosts);
         setRankedRecommendations(rankedJobPosts);
-        setRecommendedPosts(rankedJobPosts.slice(0, 5));
+        setRecommendedPosts(rankedJobPosts.slice(0, 5)); 
+        // after 3 interactions from the user specifically to add posts to their
+        // preferred posts (by starting an application), build recommendations and
+        // slice results to get the top 5 ranked posts based on cosine similarities of
+        // user interactions and the job posts' TF-IDF values in descending order 
+        // the order is sorted in the buildRankingModel function
         console.log(rankedJobPosts);
       } else {
         setRankedRecommendations([]);
