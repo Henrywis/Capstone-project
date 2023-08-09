@@ -65,6 +65,11 @@ const FixedSidebar = ({ userInteractions, rankedRecommendations }) => {
             )}
           </div>
         </div>
+        <div className="sidebar-box">
+          <div className="sidebar-box3">
+            <strong>Search these recommendations to start applying</strong>
+          </div>
+        </div>
       </div>
     </div>
   );

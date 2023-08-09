@@ -94,6 +94,9 @@ export default function Home({
           onChange={handleSearch}
           placeholder="Search jobs"
         />
+        <div className="search-icon">
+          &#128269; {/* Unicode for the magnifying glass icon */}
+        </div>
       </div>
 
       {loading ? (
@@ -133,12 +136,16 @@ export default function Home({
                       </div>
                       {showSummary && (
                         <div className="job-summary">
-                          <div className="summary-info">
-                            <p>{job.summary}</p>
+                          <div className="summary-info-container">
+                            <div className="summary-info">
+                              <p>{job.summary}</p>
+                            </div>
                           </div>
-                          <div className="like-dislike-buttons">
-                            <button className={likedPosts.some((post) => post.slug === job.slug) ? "liked" : ""} onClick={() => handleLike(job)}>Like</button>
-                            <button className={dislikedPosts.some((post) => post.slug === job.slug) ? "disliked" : ""} onClick={() => handleDislike(job)}>Dislike</button>
+                          <div className="like-dislike-container">
+                            <div className="like-dislike-buttons">
+                              <button className={likedPosts.some((post) => post.slug === job.slug) ? "liked" : ""} onClick={() => handleLike(job)}>Like</button>
+                              <button className={dislikedPosts.some((post) => post.slug === job.slug) ? "disliked" : ""} onClick={() => handleDislike(job)}>Dislike</button>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -146,11 +153,11 @@ export default function Home({
                   )}
 
                   {selectedPostId === job.slug ? (
-                    <button onClick={handleCloseApplication}>
+                    <button className="close-application-button" onClick={handleCloseApplication}>
                       Close Application
                     </button>
                   ) : (
-                    <button onClick={() => handleStartApplication(job.slug)}>
+                    <button className="start-application-button" onClick={() => handleStartApplication(job.slug)}>
                       Start Application
                     </button>
                   )}

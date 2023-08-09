@@ -17,36 +17,38 @@ export default function Navbar({
 
   return (
     <nav className="navbar">
-      <ul className="header">
-        <li>
-          <Link to="/" onClick={handleHomeClick}>
-            <span className="tooltip">Home</span>
-            <BsHouseFill />
-          </Link>
-        </li>
-        <li>
-          <Link to="/about">
-            <span className="tooltip">About</span>
-            <BsInfoCircleFill />
-          </Link>
-        </li>
-        <li>
-          <Link to="/contact">
-            <span className="tooltip">Contact</span>
-            <BsTelephoneInboundFill />
-          </Link>
-        </li>
-        <li className="user-info">
-          {user ? (
-            <>
-              <span>Hi {user.username}! | </span>
-              <button onClick={handleLogout}>Logout</button>
-            </>
-          ) : (
-            <Link to="/login">Login</Link>
-          )}
-        </li>
-      </ul>
+      <div className="header-container">
+        <ul className="header">
+          <li>
+            <Link to="/" onClick={handleHomeClick}>
+              <span className="tooltip">Home</span>
+              <BsHouseFill />
+            </Link>
+          </li>
+          <li>
+            <Link to="/about">
+              <span className="tooltip">About</span>
+              <BsInfoCircleFill />
+            </Link>
+          </li>
+          <li>
+            <Link to="/contact">
+              <span className="tooltip">Contact</span>
+              <BsTelephoneInboundFill />
+            </Link>
+          </li>
+          <li className="user-info">
+            {user ? (
+              <>
+                <span>Hi {user.username}! </span>
+                <button onClick={handleLogout}>Logout</button>
+              </>
+            ) : (
+              <Link to="/login">Login</Link>
+            )}
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 }
