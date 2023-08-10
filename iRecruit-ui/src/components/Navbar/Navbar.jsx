@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import { BsHouseFill, BsInfoCircleFill, BsTelephoneInboundFill } from 'react-icons/bs';
+import logo from '../../assets/logo-svg.svg'
 
 export default function Navbar({
   user,
@@ -18,6 +19,9 @@ export default function Navbar({
   return (
     <nav className="navbar">
       <div className="header-container">
+        <div className="logo-container">
+          <img src={logo} alt="Logo" className="logo" />
+        </div>
         <ul className="header">
           <li>
             <Link to="/" onClick={handleHomeClick}>

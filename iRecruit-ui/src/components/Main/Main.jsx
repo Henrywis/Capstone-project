@@ -346,6 +346,7 @@ function Main() {
         handleCategoryClick={handleCategoryClick}
         userInteractions={userInteractions}
         rankedRecommendations={recommendedPosts}
+        submissions={submittedApplications}
         />
         <Routes>
           <Route
@@ -379,7 +380,7 @@ function Main() {
           />
           <Route path="/feedback" element={<Feedback userInteractions={userInteractions}/>} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/applications" element={<Applications id={selectedPostId} posts={submittedApplications} />} />
+          <Route path="/applications" element={<Applications id={selectedPostId} submissions={submittedApplications} />} />
         </Routes>
       </div>
     </div>
