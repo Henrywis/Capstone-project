@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './SignupForm.css';
+import logoImage from '../../assets/logo-png.png';
 import { UserContext } from '../../UserContext.js';
 
 const SignupForm = () => {
@@ -102,6 +103,7 @@ const SignupForm = () => {
 
   return (
     <div className="signup-form-container">
+      <div className="logo-overlay" style={{ backgroundImage: `url(${logoImage})` }}></div>
       <form className="signup-form" onSubmit={handleSubmit}>
         <h2>Sign Up</h2>
         <div className="form-group">

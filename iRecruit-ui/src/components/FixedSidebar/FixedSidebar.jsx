@@ -3,9 +3,12 @@ import "./FixedSidebar.css";
 
 const FixedSidebar = ({ userInteractions, rankedRecommendations, submissions }) => {
   // Random data for the bar chart for app status to test the UI
-  const shortlistedCount = 5; //hardcoded for now
-  const pendingCount = submissions.length; // all submissions will be pending until shortlisted or rejected
-  const rejectedCount = 2;    //hardcodedfornow
+  const shortlistedCount = 5;
+   //hardcoded for now
+  const pendingCount = submissions.length; 
+  // all submissions will be pending until shortlisted or rejected
+  const rejectedCount = 2;    
+  //hardcoded for now
 
   return (
     <div className="fixed-sidebar">

@@ -70,7 +70,7 @@
 }
 
 .header a:hover {
-  color: #ff5722;
+  color: yellow;
 }
 
 
@@ -93,5 +93,5 @@
 }
 
 .user-info button:hover {
-  background-color: #ff3d00;
+  background-color: yellow;
 }
