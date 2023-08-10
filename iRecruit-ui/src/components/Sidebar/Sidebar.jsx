@@ -4,7 +4,7 @@ import "./Sidebar.css";
 import FixedSidebar from "../FixedSidebar/FixedSidebar";
 import { BsFillGrid1X2Fill, BsFillFilePersonFill, BsChatLeftTextFill, BsBuildingFillCheck } from 'react-icons/bs';
 
-export default function Sidebar( { handleCategoryClick, userInteractions, rankedRecommendations} ) {
+export default function Sidebar( { handleCategoryClick, userInteractions, rankedRecommendations, submissions} ) {
 
   const[isOpen, setIsOpen] = useState(false);
   //To set the state of the dropdown menu to be closed by default
@@ -91,7 +91,7 @@ export default function Sidebar( { handleCategoryClick, userInteractions, ranked
           <BsBuildingFillCheck />
         </Link>
       </div>
-      <FixedSidebar userInteractions={userInteractions} rankedRecommendations={rankedRecommendations}/>
+      <FixedSidebar userInteractions={userInteractions} rankedRecommendations={rankedRecommendations} submissions={submissions}/>
     </div>
   );
 }

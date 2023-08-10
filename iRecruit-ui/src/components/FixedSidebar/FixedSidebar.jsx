@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./FixedSidebar.css";
 
-const FixedSidebar = ({ userInteractions, rankedRecommendations }) => {
+const FixedSidebar = ({ userInteractions, rankedRecommendations, submissions }) => {
   // Random data for the bar chart for app status to test the UI
-  const shortlistedCount = Math.floor(Math.random() * 15);
-  const pendingCount = Math.floor(Math.random() * 20);
-  const rejectedCount = Math.floor(Math.random() * 15);
+  const shortlistedCount = 5; //hardcoded for now
+  const pendingCount = submissions.length; // all submissions will be pending until shortlisted or rejected
+  const rejectedCount = 2;    //hardcodedfornow
 
   return (
     <div className="fixed-sidebar">
